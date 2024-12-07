@@ -1,0 +1,11 @@
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/bin/Debug/net8.0/Business.deps.json
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/bin/Debug/net8.0/Business.dll
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/bin/Debug/net8.0/Business.pdb
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/Debug/net8.0/Business.GeneratedMSBuildEditorConfig.editorconfig
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/Debug/net8.0/Business.AssemblyInfoInputs.cache
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/Debug/net8.0/Business.AssemblyInfo.cs
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/Debug/net8.0/Business.csproj.CoreCompileInputs.cache
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/Debug/net8.0/Business.dll
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/Debug/net8.0/refint/Business.dll
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/Debug/net8.0/Business.pdb
+/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/Debug/net8.0/ref/Business.dll

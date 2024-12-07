@@ -1,0 +1,17 @@
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/bin/Debug/net8.0/DataAccess.deps.json
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/bin/Debug/net8.0/DataAccess.dll
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/bin/Debug/net8.0/DataAccess.pdb
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/bin/Debug/net8.0/Core.dll
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/bin/Debug/net8.0/Entites.dll
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/bin/Debug/net8.0/Core.pdb
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/bin/Debug/net8.0/Entites.pdb
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/DataAccess.csproj.AssemblyReference.cache
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/DataAccess.AssemblyInfoInputs.cache
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/DataAccess.AssemblyInfo.cs
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/DataAccess.csproj.CoreCompileInputs.cache
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/DataAccess.csproj.Up2Date
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/DataAccess.dll
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/refint/DataAccess.dll
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/DataAccess.pdb
+/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/Debug/net8.0/ref/DataAccess.dll

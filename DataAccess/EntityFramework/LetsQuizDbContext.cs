@@ -1,13 +1,25 @@
 using LetsQuizCore.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.EntityFramework;
 
 public class LetsQuizDbContext : DbContext
 {
+    private readonly IConfiguration _configuration;
+
+    public LetsQuizDbContext(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(@"Server=tcp:---.database.windows.net,1433;Initial Catalog=LetsQuizDb;Persist Security Info=False;User ID=--;Password=---@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        if (!optionsBuilder.IsConfigured)
+        {
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
+            optionsBuilder.UseSqlServer(connectionString);
+        }
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

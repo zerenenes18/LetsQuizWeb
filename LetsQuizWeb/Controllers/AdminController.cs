@@ -16,6 +16,7 @@ public class AdminController : Controller
     
     public IActionResult Index()
     {
+        // return View();
         var result = _adminService.GetAll();
         return View(result.Data);
     }

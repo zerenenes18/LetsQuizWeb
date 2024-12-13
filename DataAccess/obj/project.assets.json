@@ -2853,11 +2853,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/DataAccess.csproj",
+      "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj",
       "projectName": "DataAccess",
-      "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/DataAccess.csproj",
+      "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj",
       "packagesPath": "/Users/eneszeren/.nuget/packages/",
-      "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/",
+      "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/obj/",
       "projectStyle": "PackageReference",
       "UsingMicrosoftNETSdk": false,
       "configFilePaths": [
@@ -2873,11 +2873,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj": {
-              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj"
+            "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj": {
+              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj"
             },
-            "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj": {
-              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj"
+            "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj": {
+              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj"
             }
           }
         }

@@ -1,6 +1,8 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Business.DependencyResolvers.Autofac;
+using DataAccess.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +20,9 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 
-
+builder.Services.AddDbContext<LetsQuizDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LetsQuizDatabase"))
+);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

@@ -1,28 +1,46 @@
 using Business.Abstract;
 using Core.Utilities.Results;
+using DataAccess;
+using DataAccess.Abstract;
 using LetsQuizCore.Entities;
 
 namespace Business;
 
 public class StudentManager : IStudentService
 {
+    IStudentDal _studentDal;
+    public StudentManager(IStudentDal studentDal)
+    {
+        _studentDal = studentDal;
+    }
     public IDataResult<List<Student>> GetAll()
     {
-        throw new NotImplementedException();
-    }
+        try
+        {
+            var data = _studentDal.GetAllAsync().GetAwaiter().GetResult();
+            return new SuccessDataResult<List<Student>>(data, "Admin list successfully retrieved");
+        }
+        catch (Exception ex)
+        {
+            return new ErrorDataResult<List<Student>>(null, ex.Message);
+        }
 
-    public IResult Delete(Student product)
+    }
+    public IResult Delete(Student student)
     {
-        throw new NotImplementedException();
+        _studentDal.DeleteAsync(student).GetAwaiter().GetResult();
+        return new SuccessResult();
     }
 
     public IDataResult<Student> GetById(Guid id)
     {
-        throw new NotImplementedException();
+        var admin = _studentDal.GetAllAsync(x=> x.Id == id).GetAwaiter().GetResult();
+        return new SuccessDataResult<Student>(admin.FirstOrDefault(), "Admin successfully retrieved");
     }
 
-    public IResult Add(Student product)
+    public IResult Add(Student student)
     {
-        throw new NotImplementedException();
+        _studentDal.AddAsync(student).GetAwaiter().GetResult();
+        return new SuccessResult("Admin successfully added.");
     }
 }

@@ -2814,11 +2814,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj",
+      "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj",
       "projectName": "Core",
-      "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj",
+      "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj",
       "packagesPath": "/Users/eneszeren/.nuget/packages/",
-      "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/obj/",
+      "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/obj/",
       "projectStyle": "PackageReference",
       "UsingMicrosoftNETSdk": false,
       "configFilePaths": [

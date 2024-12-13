@@ -7,5 +7,9 @@ namespace DataAccess
 {
     public class OptionDal : EfEntityRepositoryBase<Option,LetsQuizDbContext>, IOptionDal
     {
+        public OptionDal(LetsQuizDbContext context) : base(context)
+        {
+        }
+
     }
 }

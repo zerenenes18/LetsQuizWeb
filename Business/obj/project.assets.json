@@ -1041,6 +1041,22 @@
           "bin/placeholder/Core.dll": {}
         }
       },
+      "DataAccess/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Core": "1.0.0",
+          "Entites": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "9.0.0",
+          "Microsoft.EntityFrameworkCore.SqlServer": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DataAccess.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DataAccess.dll": {}
+        }
+      },
       "Entites/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -2872,6 +2888,11 @@
       "path": "../Core/Core.csproj",
       "msbuildProject": "../Core/Core.csproj"
     },
+    "DataAccess/1.0.0": {
+      "type": "project",
+      "path": "../DataAccess/DataAccess.csproj",
+      "msbuildProject": "../DataAccess/DataAccess.csproj"
+    },
     "Entites/1.0.0": {
       "type": "project",
       "path": "../Entites/Entites.csproj",
@@ -2882,6 +2903,7 @@
     "net8.0": [
       "Autofac >= 8.1.1",
       "Core >= 1.0.0",
+      "DataAccess >= 1.0.0",
       "Entites >= 1.0.0"
     ]
   },
@@ -2891,11 +2913,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/Business.csproj",
+      "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/Business.csproj",
       "projectName": "Business",
-      "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/Business.csproj",
+      "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/Business.csproj",
       "packagesPath": "/Users/eneszeren/.nuget/packages/",
-      "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/",
+      "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/obj/",
       "projectStyle": "PackageReference",
       "UsingMicrosoftNETSdk": false,
       "configFilePaths": [
@@ -2911,11 +2933,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj": {
-              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj"
+            "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj": {
+              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj"
             },
-            "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj": {
-              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj"
+            "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj": {
+              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj"
+            },
+            "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj": {
+              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj"
             }
           }
         }

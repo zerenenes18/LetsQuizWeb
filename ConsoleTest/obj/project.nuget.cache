@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "394FKB8mgZI=",
+  "dgSpecHash": "qoaKVVdKCxo=",
   "success": true,
-  "projectFilePath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/ConsoleTest/ConsoleTest.csproj",
+  "projectFilePath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/ConsoleTest/ConsoleTest.csproj",
   "expectedPackageFiles": [
     "/Users/eneszeren/.nuget/packages/autofac/8.1.1/autofac.8.1.1.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/azure.core/1.38.0/azure.core.1.38.0.nupkg.sha512",

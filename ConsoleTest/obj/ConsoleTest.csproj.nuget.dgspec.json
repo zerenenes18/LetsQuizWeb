@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/eneszeren/RiderProjects/LetsQuizSolution/ConsoleTest/ConsoleTest.csproj": {}
+    "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/ConsoleTest/ConsoleTest.csproj": {}
   },
   "projects": {
-    "/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/Business.csproj": {
+    "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/Business.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/Business.csproj",
+        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/Business.csproj",
         "projectName": "Business",
-        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/Business.csproj",
+        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/Business.csproj",
         "packagesPath": "/Users/eneszeren/.nuget/packages/",
-        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/obj/",
+        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/obj/",
         "projectStyle": "PackageReference",
         "UsingMicrosoftNETSdk": false,
         "configFilePaths": [
@@ -27,11 +27,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj": {
-                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj"
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj"
               },
-              "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj": {
-                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj"
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj"
+              },
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj"
               }
             }
           }
@@ -76,14 +79,14 @@
         }
       }
     },
-    "/Users/eneszeren/RiderProjects/LetsQuizSolution/ConsoleTest/ConsoleTest.csproj": {
+    "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/ConsoleTest/ConsoleTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizSolution/ConsoleTest/ConsoleTest.csproj",
+        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/ConsoleTest/ConsoleTest.csproj",
         "projectName": "ConsoleTest",
-        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/ConsoleTest/ConsoleTest.csproj",
+        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/ConsoleTest/ConsoleTest.csproj",
         "packagesPath": "/Users/eneszeren/.nuget/packages/",
-        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/ConsoleTest/obj/",
+        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/ConsoleTest/obj/",
         "projectStyle": "PackageReference",
         "UsingMicrosoftNETSdk": false,
         "configFilePaths": [
@@ -99,17 +102,17 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/Business.csproj": {
-                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Business/Business.csproj"
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/Business.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/Business.csproj"
               },
-              "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj": {
-                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj"
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj"
               },
-              "/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/DataAccess.csproj": {
-                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/DataAccess.csproj"
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj"
               },
-              "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj": {
-                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj"
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj"
               }
             }
           }
@@ -148,14 +151,14 @@
         }
       }
     },
-    "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj": {
+    "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj",
+        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj",
         "projectName": "Core",
-        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj",
+        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj",
         "packagesPath": "/Users/eneszeren/.nuget/packages/",
-        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/obj/",
+        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/obj/",
         "projectStyle": "PackageReference",
         "UsingMicrosoftNETSdk": false,
         "configFilePaths": [
@@ -217,14 +220,14 @@
         }
       }
     },
-    "/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/DataAccess.csproj": {
+    "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/DataAccess.csproj",
+        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj",
         "projectName": "DataAccess",
-        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/DataAccess.csproj",
+        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj",
         "packagesPath": "/Users/eneszeren/.nuget/packages/",
-        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/DataAccess/obj/",
+        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/obj/",
         "projectStyle": "PackageReference",
         "UsingMicrosoftNETSdk": false,
         "configFilePaths": [
@@ -240,11 +243,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj": {
-                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj"
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj"
               },
-              "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj": {
-                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj"
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj"
               }
             }
           }
@@ -293,14 +296,14 @@
         }
       }
     },
-    "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj": {
+    "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj",
+        "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj",
         "projectName": "Entites",
-        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj",
+        "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj",
         "packagesPath": "/Users/eneszeren/.nuget/packages/",
-        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/obj/",
+        "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/obj/",
         "projectStyle": "PackageReference",
         "UsingMicrosoftNETSdk": false,
         "configFilePaths": [
@@ -316,8 +319,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj": {
-                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj"
+              "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj": {
+                "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj"
               }
             }
           }

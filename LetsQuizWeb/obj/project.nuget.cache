@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "kqY+CIcuuWA=",
+  "dgSpecHash": "yAGxRt16yPU=",
   "success": true,
-  "projectFilePath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/LetsQuizWeb/LetsQuizWeb.csproj",
+  "projectFilePath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/LetsQuizWeb/LetsQuizWeb.csproj",
   "expectedPackageFiles": [
     "/Users/eneszeren/.nuget/packages/autofac/8.1.1/autofac.8.1.1.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/autofac.extensions.dependencyinjection/10.0.0/autofac.extensions.dependencyinjection.10.0.0.nupkg.sha512",

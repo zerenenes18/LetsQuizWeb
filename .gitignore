@@ -1,1 +1,69 @@
+# Build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ASP.NET Core
 appsettings.Development.json
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Rider
+.idea/
+
+# Logs
+*.log
+*.tlog
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*.bak
+*.old
+
+# Byebug command history
+.byebug_history
+
+# Coverage files
+coverage/
+
+# SQLite
+*.db
+*.sqlite
+
+# Other Config Files
+.env
+secrets.json
+
+# Static Web Assets
+wwwroot/
+scopedcss/
+staticwebassets/
+
+# Ref files generated during build
+ref/
+refint/
+
+# Files generated during publish
+publish/
+*.pubxml
+*.publish.xml
+
+# Source Link JSON
+*.sourcelink.json
+
+# Miscellaneous
+*.swp
+*.lock
+.DS_Store
+Thumbs.db
+desktop.ini

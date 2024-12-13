@@ -8,6 +8,9 @@ namespace DataAccess
     public class LectureDal : EfEntityRepositoryBase<Lecture,LetsQuizDbContext>, ILectureDal
     {
         
-        
+        public LectureDal(LetsQuizDbContext context) : base(context)
+        {
+        }
+
     }
 }

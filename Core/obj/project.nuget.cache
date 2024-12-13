@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/x7IotTmA3o=",
+  "dgSpecHash": "4444rh02MdQ=",
   "success": true,
-  "projectFilePath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj",
+  "projectFilePath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj",
   "expectedPackageFiles": [
     "/Users/eneszeren/.nuget/packages/azure.core/1.38.0/azure.core.1.38.0.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/azure.identity/1.11.4/azure.identity.1.11.4.nupkg.sha512",

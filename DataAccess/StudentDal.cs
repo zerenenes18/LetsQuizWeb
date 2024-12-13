@@ -7,5 +7,9 @@ namespace DataAccess
 {
     public class StudentDal  : EfEntityRepositoryBase<Student,LetsQuizDbContext>, IStudentDal
     {
+        public StudentDal(LetsQuizDbContext context) : base(context)
+        {
+        }
+
     }
 }

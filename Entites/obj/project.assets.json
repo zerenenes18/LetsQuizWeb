@@ -2832,11 +2832,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj",
+      "projectUniqueName": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj",
       "projectName": "Entites",
-      "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/Entites.csproj",
+      "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/Entites.csproj",
       "packagesPath": "/Users/eneszeren/.nuget/packages/",
-      "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Entites/obj/",
+      "outputPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Entites/obj/",
       "projectStyle": "PackageReference",
       "UsingMicrosoftNETSdk": false,
       "configFilePaths": [
@@ -2852,8 +2852,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj": {
-              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizSolution/Core/Core.csproj"
+            "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj": {
+              "projectPath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Core/Core.csproj"
             }
           }
         }

@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LetsQuizWeb.Controllers;
 
-[Authorize(Roles = UserRoles.Admin)]
-[ApiController]
+
 public class AdminController : Controller
 {
     

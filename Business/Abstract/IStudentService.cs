@@ -6,8 +6,8 @@ namespace Business.Abstract;
 public interface IStudentService
 {
     IDataResult<List<Student>> GetAll();
-    IResult Delete(Student product);
+    IResult Delete(Student student);
     IDataResult<Student> GetById(Guid id);
-    IResult Add(Student product);
+    IResult Add(Student student);
     
 }

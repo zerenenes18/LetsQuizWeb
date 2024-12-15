@@ -21,6 +21,7 @@ public class AutofacBusinessModule : Module
         builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
         builder.RegisterType<UserDal>().As<IUserDal>().SingleInstance();
       
+        builder.RegisterType<AuthService>().As<IAuthService>().SingleInstance();
        
         // builder.RegisterType<AdminManager>().As<IAdminService>().SingleInstance();
 

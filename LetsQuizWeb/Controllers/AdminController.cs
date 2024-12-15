@@ -1,8 +1,12 @@
 using Business.Abstract;
+using Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LetsQuizWeb.Controllers;
 
+[Authorize(Roles = UserRoles.Admin)]
+[ApiController]
 public class AdminController : Controller
 {
     
@@ -20,6 +24,11 @@ public class AdminController : Controller
         var result = _adminService.GetAll();
         return View(result.Data);
     }
-    
+
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok("Admin erişim sağladı!");
+        }
     
 }

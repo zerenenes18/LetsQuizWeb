@@ -29,3 +29,13 @@
 /Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/obj/Debug/net8.0/refint/Business.dll
 /Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/obj/Debug/net8.0/Business.pdb
 /Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/obj/Debug/net8.0/ref/Business.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.AspNetCore.Http.Abstractions.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.AspNetCore.Http.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.Extensions.Features.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.AspNetCore.Http.Features.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.AspNetCore.WebUtilities.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.AspNetCore.Connections.Abstractions.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.Net.Http.Headers.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.Extensions.ObjectPool.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.AspNetCore.Http.Extensions.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/Business/bin/Debug/net8.0/Microsoft.Extensions.FileProviders.Abstractions.dll

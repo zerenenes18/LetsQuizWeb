@@ -1,4 +1,5 @@
 using Business.Abstract;
+using Business.Constants;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using LetsQuizCore.Entities;
@@ -35,6 +36,20 @@ public class UserManager : IUserService
     {
         var user = _userDal.GetAllAsync(x=> x.Id == id).GetAwaiter().GetResult();
         return new SuccessDataResult<User>(user.FirstOrDefault(), "Admin successfully retrieved");
+    }
+
+    public  IDataResult<User> GetByMail(string email)
+    {
+        User user = _userDal.GetAsync(u => u.Email == email).GetAwaiter().GetResult();
+        if (user != null)
+        {
+            return new SuccessDataResult<User>(user,Messages.UserAlreadyExists);
+        }
+        else
+        {
+            return new ErrorDataResult<User>(Messages.UserNotFound);
+        }
+       
     }
 
     public IResult Add(User user)

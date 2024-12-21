@@ -1,8 +1,10 @@
 using Autofac;
 using Business.Abstract;
+using Core.Utilities.Security.JWT;
 using DataAccess;
 using DataAccess.Abstract;
 using DataAccess.EntityFramework;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -21,11 +23,12 @@ public class AutofacBusinessModule : Module
         builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
         builder.RegisterType<UserDal>().As<IUserDal>().SingleInstance();
       
-        builder.RegisterType<AuthService>().As<IAuthService>().SingleInstance();
+        builder.RegisterType<AuthManager>().As<IAuthService>();
+        builder.RegisterType<JwtHelper>().As<ITokenHelper>();
        
         // builder.RegisterType<AdminManager>().As<IAdminService>().SingleInstance();
-
-       
+        builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>();
+        builder.RegisterType<EfVerificationCodeDal>().As<EfVerificationCodeDal>().SingleInstance();
        
        
         // DbContext kaydı
@@ -34,7 +37,7 @@ public class AutofacBusinessModule : Module
            
             var configuration = ctx.Resolve<IConfiguration>();
         
-         
+
             var optionsBuilder = new DbContextOptionsBuilder<LetsQuizDbContext>();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 

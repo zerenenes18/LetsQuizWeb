@@ -1,9 +1,16 @@
+using Azure.Core;
+using Core.Utilities.Results;
 using LetsQuizCore.Entities;
+using LetsQuizCore.Entities.DTOs;
 
 namespace Business.Abstract;
 
 public interface IAuthService
 {
-    string GenerateJwtToken(User user);
-    User Authenticate(string username, string password);
+    IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password);
+    IDataResult<User> Login(UserForLoginDto userForLoginDto);
+    IResult UserExists(string email);
+    IDataResult<AccessToken> CreateAccessToken(User user);
+    IResult RegisterEmailSendCode();
+    IResult RegisterControlEmailCode(int code);
 }

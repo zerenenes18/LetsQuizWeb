@@ -7,7 +7,7 @@ using DataAccess;
 using LetsQuizCore.Entities;
 using LetsQuizCore.Entities.DTOs;
 using Microsoft.AspNetCore.Http;
-using AccessToken = Azure.Core.AccessToken;
+
 using IResult = Core.Utilities.Results.IResult;
 
 namespace Business;
@@ -53,7 +53,18 @@ public class AuthManager : IAuthService
 
     public IDataResult<User> Login(UserForLoginDto userForLoginDto)
     {
-        throw new NotImplementedException();
+        User userToCheck = _userService.GetByMail(userForLoginDto.Email).Data;
+        if (userToCheck == null)
+        {
+            return new ErrorDataResult<User>(Messages.UserNotFound);
+        }
+
+        if (!HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToCheck.PasswordHash, userToCheck.PasswordSalt))
+        {
+            return new ErrorDataResult<User>(Messages.PasswordError);
+        }
+
+        return new SuccessDataResult<User>(userToCheck, Messages.SuccessfulLogin);
     }
 
     public IResult UserExists(string email)
@@ -68,7 +79,9 @@ public class AuthManager : IAuthService
 
     public IDataResult<AccessToken> CreateAccessToken(User user)
     {
-        throw new NotImplementedException();
+        var claims = _userService.GetClaims(user).Data;
+        AccessToken accessToken = _tokenHelper.CreateToken(user, claims);
+        return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
     }
 
     public IResult RegisterEmailSendCode()

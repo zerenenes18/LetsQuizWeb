@@ -1,5 +1,6 @@
 using Business.Abstract;
 using Business.Constants;
+using Core.Entities;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using LetsQuizCore.Entities;
@@ -56,5 +57,19 @@ public class UserManager : IUserService
     {
         _userDal.AddAsync(user).GetAwaiter().GetResult();
         return new SuccessResult("Admin successfully added.");
+    }
+
+    public IDataResult<List<OperationClaim>> GetClaims(User user)
+    {
+        var claims = _userDal.GetClaims(user);
+        if (claims.Count == 0)
+        {
+            return new SuccessDataResult<List<OperationClaim>>(claims);
+        }
+        else
+        {
+            return new ErrorDataResult<List<OperationClaim>>(Messages.NotFound);
+        }
+        
     }
 }

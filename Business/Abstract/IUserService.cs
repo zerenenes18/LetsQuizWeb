@@ -1,3 +1,4 @@
+using Core.Entities;
 using Core.Utilities.Results;
 using LetsQuizCore.Entities;
 
@@ -10,4 +11,5 @@ public interface IUserService
     IDataResult<User> GetById(Guid id);
     IDataResult<User> GetByMail(string email);
     IResult Add(User user);
+    IDataResult<List<OperationClaim>> GetClaims(User user);
 }

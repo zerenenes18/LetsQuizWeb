@@ -13,6 +13,7 @@ public static class Messages
     public static string UserNotFound = "User not found.";
     public static string PasswordError = "Password error.";
     public static string SuccessfulLogin = "Successful login.";
+    public static string NotFound = "404 Not Found.";
     public static string UserAlreadyExists = "User already exists.";
     public static string AccessTokenCreated = "Access token created.";
 }

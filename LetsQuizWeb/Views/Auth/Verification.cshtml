@@ -1,0 +1,125 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<link rel="stylesheet" href="~/Login/css/login.css"/>
+<div class="container">
+    <video id="background-video" autoplay muted loop>
+        <source src="/Videos/LoginBackground.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <h4 class="text-center mb-4">E-Mail Check</h4>
+            <form id="verification-form">
+                <button type="button" id="sendCodeBtn" class="btn btn-primary w-100">Send Code</button>
+                <div id="confirmCodeSection" style="display: none; margin-top: 20px;">
+                    <label for="verificationCode">Enter Code</label>
+                    <input type="text" id="verificationCode" class="form-control mb-3" placeholder="Enter verification code" />
+                    <button type="button" id="confirmCodeBtn" class="btn btn-success w-100">Confirm Code</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const sendCodeBtn = document.getElementById("sendCodeBtn");
+        const confirmCodeSection = document.getElementById("confirmCodeSection");
+        const confirmCodeBtn = document.getElementById("confirmCodeBtn");
+
+        // "Send Code" butonu için event listener
+        sendCodeBtn.addEventListener("click", async () => {
+            const authToken = localStorage.getItem("authToken");
+
+            if (!authToken) {
+                alert("Authentication token not found!");
+                return;
+            }
+
+            sendCodeBtn.disabled = true; // Butonu devre dışı bırak
+            sendCodeBtn.innerText = "Sending...";
+
+            try {
+                const response = await fetch("/auth/SendVerificationCode", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify("sendCode") // String olarak gönderim
+                });
+
+                if (response.ok) {
+                   // alert("Verification code sent successfully.");
+                    sendCodeBtn.innerText = "Send Code (1:00)";
+                    confirmCodeSection.style.display = "block";
+
+                    // Geri sayım
+                    let countdown = 60;
+                    const interval = setInterval(() => {
+                        countdown--;
+                        sendCodeBtn.innerText = `Send Code (${countdown}s)`;
+                        if (countdown <= 0) {
+                            clearInterval(interval);
+                            sendCodeBtn.innerText = "Send Code";
+                            sendCodeBtn.disabled = false;
+                        }
+                    }, 1000);
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message || "Failed to send code."}`);
+                    sendCodeBtn.disabled = false;
+                    sendCodeBtn.innerText = "Send Code";
+                }
+            } catch (err) {
+                console.error("Error sending code:", err);
+                alert("An error occurred while sending the code.");
+                sendCodeBtn.disabled = false;
+                sendCodeBtn.innerText = "Send Code";
+            }
+        });
+
+        // "Confirm Code" butonu için event listener
+        confirmCodeBtn.addEventListener("click", async () => {
+            const authToken = localStorage.getItem("authToken");
+            const verificationCode = document.getElementById("verificationCode").value.trim();
+
+            if (!authToken || !verificationCode) {
+                alert("Authentication token or verification code is missing!");
+                return;
+            }
+
+            confirmCodeBtn.disabled = true; // Butonu devre dışı bırak
+            confirmCodeBtn.innerText = "Verifying...";
+
+            try {
+                const response = await fetch("/auth/ControlCode", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(verificationCode) // Kod string olarak gönderiliyor
+                });
+
+                if (response.ok) {
+                    //alert("Verification successful!");
+                    // Doğrulama başarılı olduğunda yönlendirme
+                    window.location.href = '/Login/Index'; // Redirect to home page
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message || "Failed to verify code."}`);
+                    confirmCodeBtn.innerText = "Confirm Code";
+                }
+            } catch (err) {
+                console.error("Error verifying code:", err);
+                alert("An error occurred while verifying the code.");
+                confirmCodeBtn.innerText = "Confirm Code";
+            } finally {
+                confirmCodeBtn.disabled = false;
+            }
+        });
+    });
+</script>

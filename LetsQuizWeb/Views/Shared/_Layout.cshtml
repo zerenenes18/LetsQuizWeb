@@ -7,10 +7,42 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/LetsQuizWeb.styles.css" asp-append-version="true"/>
+    <style>
+        /* Şeffaf Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.85); /* Hafif şeffaf beyaz */
+            margin-top: 6px; !important;
+            
+            z-index: 10; /* Üstte görünmesi için */
+            border-radius: 20px; !important; /* Köşeleri yuvarlat */
+        }
+
+        .navbar-brand, .nav-link {
+            color: #000 !important; /* Metin rengini koyu yap */
+        }
+
+        .navbar-brand:hover, .nav-link:hover {
+            color: #007bff !important; /* Hover durumunda renk değişimi */
+        }
+
+        footer {
+            z-index: 2;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6); /* Yarı şeffaf arka plan */
+            color: white;
+            height: 65px;
+            bottom: 0;
+            padding-top: 10px;
+            display: flex; /* Flexbox etkinleştirildi */
+            align-items: center; /* Dikey hizalama */
+            justify-content: center; /* Yatay hizalama */
+        }
+    </style>
 </head>
+
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LetsQuizWeb</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -37,9 +69,7 @@
 </div>
 
 <footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2024 - LetsQuizWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
+    <p>&copy; 2024 LetsQuiz - All Rights Reserved</p>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

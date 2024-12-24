@@ -1,5 +1,6 @@
 using Autofac;
 using Business.Abstract;
+using Business.Constants;
 using Core.Utilities.Security.JWT;
 using DataAccess;
 using DataAccess.Abstract;
@@ -22,14 +23,15 @@ public class AutofacBusinessModule : Module
        
         builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
         builder.RegisterType<UserDal>().As<IUserDal>().SingleInstance();
-      
+        
         builder.RegisterType<AuthManager>().As<IAuthService>();
         builder.RegisterType<JwtHelper>().As<ITokenHelper>();
        
         // builder.RegisterType<AdminManager>().As<IAdminService>().SingleInstance();
         builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>();
-        builder.RegisterType<EfVerificationCodeDal>().As<EfVerificationCodeDal>().SingleInstance();
-       
+        builder.RegisterType<VerificationCodeDal>().As<VerificationCodeDal>().SingleInstance();
+        builder.RegisterType<MailSettings>().As<MailSettings>().SingleInstance();
+
        
         // DbContext kaydı
         builder.Register(ctx =>

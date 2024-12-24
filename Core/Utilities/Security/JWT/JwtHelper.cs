@@ -58,6 +58,7 @@ public class JwtHelper: ITokenHelper
         claims.AddNameIdentifier(user.Id.ToString());
         claims.AddEmail(user.Email);
         claims.AddName($"{user.FirstName} {user.LastName}");
+        claims.AddUserName(user.UserName);
         claims.AddRoles(operationClaims.Select(c => c.Name).ToArray());
 
         return claims;

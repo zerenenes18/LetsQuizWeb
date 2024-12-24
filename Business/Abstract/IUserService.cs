@@ -10,6 +10,8 @@ public interface IUserService
     IResult Delete(User user);
     IDataResult<User> GetById(Guid id);
     IDataResult<User> GetByMail(string email);
+    IDataResult<User> GetByUserName(string userName);
     IResult Add(User user);
+    IResult Update(User user);
     IDataResult<List<OperationClaim>> GetClaims(User user);
 }

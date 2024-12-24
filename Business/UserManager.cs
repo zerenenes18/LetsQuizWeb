@@ -53,10 +53,29 @@ public class UserManager : IUserService
        
     }
 
+    public IDataResult<User> GetByUserName(string userName)
+    {
+        User user = _userDal.GetAsync(u => u.UserName == userName).GetAwaiter().GetResult();
+        if (user != null)
+        {
+            return new SuccessDataResult<User>(user,Messages.UserAlreadyExists);
+        }
+        else
+        {
+            return new ErrorDataResult<User>(Messages.UserNotFound);
+        }
+    }
+
     public IResult Add(User user)
     {
         _userDal.AddAsync(user).GetAwaiter().GetResult();
         return new SuccessResult("Admin successfully added.");
+    }
+
+    public IResult Update(User user)
+    {
+        _userDal.UpdateAsync(user).GetAwaiter().GetResult();
+        return new SuccessResult();
     }
 
     public IDataResult<List<OperationClaim>> GetClaims(User user)

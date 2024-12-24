@@ -21,6 +21,14 @@ public static class ClaimExtensions
             claims.Add(new Claim(ClaimTypes.Name, name));
         }
     }
+    
+    public static void AddUserName(this ICollection<Claim> claims, string userName)
+    {
+        if (!string.IsNullOrWhiteSpace(userName))
+        {
+            claims.Add(new Claim(ClaimTypes.Name, userName));
+        }
+    }
 
     public static void AddNameIdentifier(this ICollection<Claim> claims, string nameIdentifier)
     {

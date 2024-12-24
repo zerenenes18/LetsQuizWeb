@@ -1,0 +1,97 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<link rel="stylesheet" href="~/Login/css/register.css"/>
+<div class="container">
+    <video id="background-video" autoplay muted loop>
+        <source src="/Videos/LoginBackground.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <h4 class="text-center mb-4">Sign Up</h4>
+            <form id="registerForm" method="post">
+                <div class="form-group">
+                    <label for="FirstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="FirstName" name="FirstName" placeholder="Enter your first name" required />
+                </div>
+                <div class="form-group">
+                    <label for="LastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="LastName" name="LastName" placeholder="Enter your last name" required />
+                </div>
+                <div class="form-group">
+                    <label for="Email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="Email" name="Email" placeholder="Enter your email address" required />
+                </div>
+                <div class="form-group">
+                    <label for="UserName" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="UserName" name="UserName" placeholder="Enter your username" required />
+                </div>
+                <div class="form-group">
+                    <label for="Password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="Password" name="Password" placeholder="Enter your password" required />
+                </div>
+                <div class="form-group">
+                    <label for="PasswordConfirm" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="PasswordConfirm" name="PasswordConfirm" placeholder="Confirm your password" required />
+                </div>
+                <div id="error-message" style="color: red; display: none; text-align: center; margin-bottom: 10px;">
+                    Passwords do not match!
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+            <hr class="my-4" />
+            <div class="text-center">
+                <p>Already have an account? <a asp-controller="Login" asp-action="Index">Log In</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+        $(document).ready(function() {
+        $('#registerForm').submit(function(event) {
+            event.preventDefault();
+            var formData = {
+                Email: $('#Email').val(),
+                Password: $('#Password').val(),
+                UserName: $('#UserName').val(),
+                FirstName: $('#FirstName').val(),
+                LastName: $('#LastName').val(),
+            };
+            $.ajax({
+                url: '/Auth/UserRegister',
+                type: 'POST',
+                contentType: 'application/json', // Ensure proper content type
+                dataType: 'json', // Expect JSON in response
+                data: JSON.stringify(formData), // Convert formData to JSON
+                success: function(response) {
+                    if (response.success) {
+                        localStorage.setItem('authToken', response.data.token); // Save token in Local Storage
+                        window.location.href = '/Auth/Verification'; // Redirect to home page
+                    } else {
+                        alert('Login failed: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Login request failed: ' + error);
+                }
+            });
+        });
+    });
+
+        document.getElementById("registerForm").addEventListener("submit", function(event) {
+            const password = document.getElementById("Password").value;
+            const confirmPassword = document.getElementById("PasswordConfirm").value;
+
+            if (password !== confirmPassword) {
+                event.preventDefault(); // Formun gönderilmesini durdur
+                const errorMessage = document.getElementById("error-message");
+                errorMessage.style.display = "block"; // Hata mesajını göster
+            }
+        });
+
+</script>

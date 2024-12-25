@@ -1,8 +1,76 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<link rel="stylesheet" href="~/css/home.css" />
+
+<div class="container mt-5">
+  
+    <div class="row">
+        @foreach (var lesson in Model.Lessons)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg lesson-card">
+                    <div class="card-header lesson-card-header">
+                        <h5 class="card-title text-center">@lesson.Title</h5>
+                    </div>
+                    <div class="card-body lesson-card-body">
+                        <ul class="list-group">
+                            @foreach (var quiz in lesson.Quizzes)
+                            {
+                                <li class="list-group-item quiz-item">
+                                    <a href="@Url.Action("Details", "Quiz", new { id = quiz.Id })" class="quiz-link">
+                                        @quiz.Title
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Score Tablosu -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <video id="background-video" autoplay muted loop>
+                <source src="/Videos/Home.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="card shadow-lg score-card">
+                <div class="card-header text-center score-card-header">
+                    <h5>Score Table</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover text-center">
+                        <thead class="table-light">
+                        <tr>
+                            <th>UserName</th>
+                            <th>Score</th>
+                            <th>QuizName</th>
+                            <th>QuizLecture</th>
+                            <th>Success Rate</th>
+                            <th>Points</th>
+                        </tr></thead>
+                        <tbody>
+                        @foreach (var score in Model.Scores)
+                        {
+                            <tr>
+                                <td>@score.UserName</td>
+                                <td>@score.Score</td>
+                                <td>@score.QuizName</td>
+                                <td>@score.QuizLecture</td>
+                                <td>@score.SuccessRate%</td>
+                                <td>@score.Points</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

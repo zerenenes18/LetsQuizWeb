@@ -9,12 +9,16 @@
     <link rel="stylesheet" href="~/LetsQuizWeb.styles.css" asp-append-version="true"/>
     <style>
         /* Şeffaf Navbar */
+        /* Şeffaf Navbar */
         .navbar {
             background: rgba(255, 255, 255, 0.85); /* Hafif şeffaf beyaz */
-            margin-top: 6px; !important;
-            
             z-index: 10; /* Üstte görünmesi için */
-            border-radius: 20px; !important; /* Köşeleri yuvarlat */
+            border-radius: 20px; /* Köşeleri yuvarlat */
+            position: fixed; /* Sabit pozisyon */
+            top: 0; /* Ekranın üstüne sabitler */
+            left: 0;
+            width: 100%; /* Tüm genişliği kapsar */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
         }
 
         .navbar-brand, .nav-link {
@@ -25,10 +29,11 @@
             color: #007bff !important; /* Hover durumunda renk değişimi */
         }
 
+        /* Alt alan */
         footer {
             z-index: 2;
             text-align: center;
-            background: rgba(0, 0, 0, 0.6); /* Yarı şeffaf arka plan */
+            background: rgba(0, 0, 0, 0.4); /* Yarı şeffaf arka plan */
             color: white;
             height: 65px;
             bottom: 0;
@@ -37,6 +42,24 @@
             align-items: center; /* Dikey hizalama */
             justify-content: center; /* Yatay hizalama */
         }
+
+        /* Arka plan video ayarları */
+        #background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100; /* İçerik üzerinde görünmemesi için */
+            background-size: cover;
+        }
+        
+        button {
+            border-radius: 10px !important;
+        }
+      
     </style>
 </head>
 
@@ -58,11 +81,23 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
                 </ul>
+              
+                <ul class="navbar-nav">
+                    <!-- Login/Logout Button -->
+                    <li class="nav-item">
+                        <button id="loginBtn" class="nav-link text-dark" onclick="handleLogin()">Log in</button>
+                        <button id="logoutBtn" class="nav-link text-dark" onclick="handleLogout()" style="display: none;">Log out</button>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
 </header>
 <div class="container">
+    <video id="background-video" autoplay muted loop>
+        <source src="/Videos/Shared.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
@@ -73,7 +108,40 @@
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Navbar'daki butonları kontrol et
+    document.addEventListener("DOMContentLoaded", () => {
+        const loginBtn = document.getElementById("loginBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        // localStorage'daki auth token'i kontrol et
+        const authToken = localStorage.getItem("authToken");
+
+        if (authToken) {
+            // Eğer token varsa, logout butonunu göster
+            loginBtn.style.display = "none";
+            logoutBtn.style.display = "inline-block";
+        } else {
+            // Eğer token yoksa, login butonunu göster
+            loginBtn.style.display = "inline-block";
+            logoutBtn.style.display = "none";
+        }
+    });
+
+    // Login Butonuna Basıldığında
+    function handleLogin() {
+        window.location.href = "/Login/Index"; // Giriş sayfasına yönlendirme
+    }
+
+    // Logout Butonuna Basıldığında
+    function handleLogout() {
+        localStorage.removeItem("authToken"); // Auth token'i sil
+        //alert("Successfully logged out!");
+        window.location.reload(); // Sayfayı yenile
+    }
+</script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

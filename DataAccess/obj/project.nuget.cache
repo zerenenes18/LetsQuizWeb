@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "tTIlvZ12kNQ=",
+  "dgSpecHash": "/rZ8YwY9dEM=",
   "success": true,
   "projectFilePath": "/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/DataAccess.csproj",
   "expectedPackageFiles": [
     "/Users/eneszeren/.nuget/packages/azure.core/1.38.0/azure.core.1.38.0.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/azure.identity/1.11.4/azure.identity.1.11.4.nupkg.sha512",
+    "/Users/eneszeren/.nuget/packages/castle.core/5.1.1/castle.core.5.1.1.nupkg.sha512",
+    "/Users/eneszeren/.nuget/packages/castle.dynamicproxy/2.2.0/castle.dynamicproxy.2.2.0.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/microsoft.bcl.asyncinterfaces/1.1.1/microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/microsoft.data.sqlclient/5.1.6/microsoft.data.sqlclient.5.1.6.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/microsoft.data.sqlclient.sni.runtime/5.1.1/microsoft.data.sqlclient.sni.runtime.5.1.1.nupkg.sha512",
@@ -36,6 +38,7 @@
     "/Users/eneszeren/.nuget/packages/system.clientmodel/1.0.0/system.clientmodel.1.0.0.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/system.configuration.configurationmanager/6.0.1/system.configuration.configurationmanager.6.0.1.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/system.diagnostics.diagnosticsource/9.0.0/system.diagnostics.diagnosticsource.9.0.0.nupkg.sha512",
+    "/Users/eneszeren/.nuget/packages/system.diagnostics.eventlog/6.0.0/system.diagnostics.eventlog.6.0.0.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/system.drawing.common/6.0.0/system.drawing.common.6.0.0.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/system.formats.asn1/9.0.0/system.formats.asn1.9.0.0.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/system.identitymodel.tokens.jwt/8.3.0/system.identitymodel.tokens.jwt.8.3.0.nupkg.sha512",
@@ -56,5 +59,26 @@
     "/Users/eneszeren/.nuget/packages/system.threading.tasks.extensions/4.5.4/system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "/Users/eneszeren/.nuget/packages/system.windows.extensions/6.0.0/system.windows.extensions.6.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1608",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Detected package version outside of dependency constraint: Castle.DynamicProxy 2.2.0 requires Castle.Core (= 1.2.0) but version Castle.Core 5.1.1 was resolved.",
+      "libraryId": "Castle.Core",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Castle.DynamicProxy 2.2.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Castle.DynamicProxy",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }

@@ -3,6 +3,7 @@ using System.Net.Mail;
 using System.Net.Mime;
 using Business.Abstract;
 using Business.Constants;
+using Core.Entities;
 using Core.Extensions;
 using Core.Utilities.Results;
 using Core.Utilities.Security.Hashing;
@@ -105,6 +106,7 @@ public class AuthManager : IAuthService
         {
             UserEmail = userEmail,
             Code = code,
+            CreatedAt = DateTime.Now
         });
         SendEMail(userName,userEmail,code).GetAwaiter().GetResult();
 
@@ -114,10 +116,29 @@ public class AuthManager : IAuthService
  
     public IResult RegisterControlEmailCode(int code)
     {
+        DateTime oneMinuteAgo = DateTime.Now.AddMinutes(-1);
+        
+// Kullanıcının e-posta adresini al
         var userEmail = _httpContextAccessor.HttpContext.User.ClaimEmail();
 
-        var DbCode = _verificationCodeDal.GetAsync(c => c.UserEmail == userEmail).GetAwaiter().GetResult().Code;
+// 1 dakikadan eski doğrulama kodlarını al
+        List<VerificationCode> oldVerificationCodes = _verificationCodeDal
+            .GetAllAsync(c => c.CreatedAt <= oneMinuteAgo )
+            .GetAwaiter()
+            .GetResult();
 
+// 1 dakika içinde oluşturulan doğrulama kodlarını al
+        List<VerificationCode> recentVerificationCodes = _verificationCodeDal
+            .GetAllAsync(c => c.CreatedAt > oneMinuteAgo)
+            .GetAwaiter()
+            .GetResult();
+
+// 1 dakikadan eski doğrulama kodlarını sil
+        foreach (var verificationCode in oldVerificationCodes)
+        {
+            _verificationCodeDal.DeleteAsync(verificationCode).GetAwaiter().GetResult();
+        }
+        var DbCode = recentVerificationCodes.Where(c => c.UserEmail == userEmail).FirstOrDefault().Code;
         if (code == DbCode)
         {
             var userToUpdate =  _userService.GetByMail(userEmail).Data;
@@ -127,7 +148,6 @@ public class AuthManager : IAuthService
             _verificationCodeDal.DeleteAsync(deleteToCode).GetAwaiter().GetResult();
             return new SuccessResult();
         }
-
         return new ErrorResult();
 
     }

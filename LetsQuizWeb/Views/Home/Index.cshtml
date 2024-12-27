@@ -5,33 +5,12 @@
 }
 
 <link rel="stylesheet" href="~/css/home.css" />
-
+<style>
+    .my-score-card{
+        margin-top: 40px !important;
+    }
+</style>
 <div class="container mt-5">
-  
-    <div class="row">
-        @foreach (var lesson in Model.Lessons)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-lg lesson-card">
-                    <div class="card-header lesson-card-header">
-                        <h5 class="card-title text-center">@lesson.Title</h5>
-                    </div>
-                    <div class="card-body lesson-card-body">
-                        <ul class="list-group">
-                            @foreach (var quiz in lesson.Quizzes)
-                            {
-                                <li class="list-group-item quiz-item">
-                                    <a href="@Url.Action("Details", "Quiz", new { id = quiz.Id })" class="quiz-link">
-                                        @quiz.Title
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
 
     <!-- Score Tablosu -->
     <div class="row mt-4">
@@ -40,7 +19,7 @@
                 <source src="/Videos/Home.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-            <div class="card shadow-lg score-card">
+            <div class="card shadow-lg score-card my-score-card">
                 <div class="card-header text-center score-card-header">
                     <h5>Score Table</h5>
                 </div>
@@ -49,7 +28,7 @@
                         <thead class="table-light">
                         <tr>
                             <th>UserName</th>
-                            <th>Score</th>
+                          
                             <th>QuizName</th>
                             <th>QuizLecture</th>
                             <th>Success Rate</th>
@@ -60,7 +39,7 @@
                         {
                             <tr>
                                 <td>@score.UserName</td>
-                                <td>@score.Score</td>
+                               
                                 <td>@score.QuizName</td>
                                 <td>@score.QuizLecture</td>
                                 <td>@score.SuccessRate%</td>
@@ -73,4 +52,92 @@
             </div>
         </div>
     </div>
+
+    <!-- Dersler ve Quizler -->
+    <div class="row mt-5" id="lessonsContainer">
+        <!-- Dinamik içerik burada yüklenecek -->
+    </div>
+
 </div>
+
+<!-- Include jQuery if it's not already included -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Dersler ve Quizleri yükleme
+        function loadLessonsAndQuizzes() {
+            const lessonsContainer = $('#lessonsContainer');
+
+            // Yükleniyor işaretini ekle
+            lessonsContainer.html(`
+                <div class="text-center my-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading lessons and quizzes...</p>
+                </div>
+            `);
+
+            $.ajax({
+                url: '/Quiz/GetGlobalQuizzesData',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken') // Eğer oturum doğrulama kullanıyorsanız
+                },
+                success: function (data) {
+                    lessonsContainer.empty(); // Yükleniyor işaretini kaldır
+
+                    // Lecture Listesi
+                    const lectures = data.lectureList;
+                    const quizzes = data.adminQuizzesModel;
+
+                    console.log(lectures);
+                    console.log(quizzes);
+
+                    // Her bir ders için card oluştur
+                    lectures.forEach(lecture => {
+                        const lessonQuizzes = quizzes.filter(q => q.lectureName === lecture);
+
+                        const lessonCard = `
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-lg lesson-card">
+                                <div class="card-header lesson-card-header">
+                                    <h5 class="card-title text-center">${lecture}</h5>
+                                </div>
+                                <div class="card-body lesson-card-body">
+                                    <ul class="list-group">
+                                        ${
+                            lessonQuizzes.length > 0
+                                ? lessonQuizzes.map(quiz => `
+                                                    <li class="list-group-item quiz-item">
+                                                        <a href="/Quiz/QuizDetail?quizId=${quiz.quizId}" class="quiz-link">
+                                                            ${quiz.quizName}
+                                                        </a>
+                                                    </li>
+                                                `).join('')
+                                : '<li class="list-group-item text-muted">No quizzes available</li>'
+                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                        lessonsContainer.append(lessonCard);
+                    });
+                },
+                error: function () {
+                    lessonsContainer.html(`
+                        <div class="text-center my-5">
+                            <p class="text-danger">Failed to load lessons and quizzes. Please try again later.</p>
+                        </div>
+                    `);
+                    Swal.fire('Error', 'Failed to load lessons and quizzes!', 'error');
+                }
+            });
+        }
+
+        // Sayfa yüklendiğinde çağır
+        loadLessonsAndQuizzes();
+    });
+</script>

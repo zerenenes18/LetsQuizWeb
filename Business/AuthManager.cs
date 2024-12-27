@@ -21,6 +21,7 @@ public class AuthManager : IAuthService
 {
     
     private readonly IUserService _userService;
+    
     private readonly ITokenHelper _tokenHelper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly VerificationCodeDal _verificationCodeDal;
@@ -34,10 +35,11 @@ public class AuthManager : IAuthService
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         _verificationCodeDal = validationCodeDal ?? throw new ArgumentNullException(nameof(validationCodeDal));
         _mailSettings = mailSettings.Value;
+        
     }
 
 
-    public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
+    public async Task<IDataResult<User>> RegisterAsync(UserForRegisterDto userForRegisterDto, string password)
     {
         byte[] passwordHash;
         byte[] passwordSalt;
@@ -56,16 +58,20 @@ public class AuthManager : IAuthService
             EmailControl = false
                 
         };
-        _userService.Add(user);
+        _userService.AddAsync(user);
+        
+      
         return new SuccessDataResult<User>(user, Messages.UserRegistered);
     }
 
-    public IDataResult<User> Login(UserForLoginDto userForLoginDto)
+    public async Task<IDataResult<User>> LoginAsync(UserForLoginDto userForLoginDto)
     {
-        User userToCheck = _userService.GetByMail(userForLoginDto.Email).Data;
+        var tmpResult = await _userService.GetByMailAsync(userForLoginDto.Email);
+        User userToCheck = tmpResult.Data;
         if (userToCheck == null)
         {
-            userToCheck = _userService.GetByUserName(userForLoginDto.Email).Data;
+            var tmpResult2 = await _userService.GetByUserNameAsync(userForLoginDto.Email);
+            userToCheck = tmpResult2.Data;
             if (userToCheck == null)
             {
                 return new ErrorDataResult<User>(Messages.UserNotFound);
@@ -80,9 +86,10 @@ public class AuthManager : IAuthService
         return new SuccessDataResult<User>(userToCheck, Messages.SuccessfulLogin);
     }
 
-    public IResult UserExists(string email)
+    public async Task<IResult> UserExistsAsync(string email)
     {
-        if (_userService.GetByMail(email).Success)
+        var tmpResult = await _userService.GetByMailAsync(email);
+        if (tmpResult.Success)
         {
             return new SuccessResult();
         }
@@ -90,14 +97,17 @@ public class AuthManager : IAuthService
 
     }
 
-    public IDataResult<AccessToken> CreateAccessToken(User user)
+    public async Task<IDataResult<AccessToken>> CreateAccessTokenAsync(User user)
     {
-        var claims = _userService.GetClaims(user).Data;
+        var tmpResult = await _userService.GetClaimsAsync(user);
+        var claims = tmpResult.Data;
         AccessToken accessToken = _tokenHelper.CreateToken(user, claims);
         return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
     }
 
-    public IResult RegisterEmailSendCode()
+
+
+    public async Task<IResult> RegisterEmailSendCodeAsync()
     {
         var userEmail = _httpContextAccessor.HttpContext.User.ClaimEmail();
         var userName = _httpContextAccessor.HttpContext.User.ClaimUserName();
@@ -108,44 +118,36 @@ public class AuthManager : IAuthService
             Code = code,
             CreatedAt = DateTime.Now
         });
-        SendEMail(userName,userEmail,code).GetAwaiter().GetResult();
+        await SendEMailAsync(userName, userEmail, code);
 
         return new SuccessResult();
     }
 
  
-    public IResult RegisterControlEmailCode(int code)
+    public async Task<IResult> RegisterControlEmailCodeAsync(int code)
     {
         DateTime oneMinuteAgo = DateTime.Now.AddMinutes(-1);
-        
-// Kullanıcının e-posta adresini al
         var userEmail = _httpContextAccessor.HttpContext.User.ClaimEmail();
+        List<VerificationCode> oldVerificationCodes = await _verificationCodeDal.GetAllAsync(c => c.CreatedAt <= oneMinuteAgo );
 
-// 1 dakikadan eski doğrulama kodlarını al
-        List<VerificationCode> oldVerificationCodes = _verificationCodeDal
-            .GetAllAsync(c => c.CreatedAt <= oneMinuteAgo )
-            .GetAwaiter()
-            .GetResult();
 
-// 1 dakika içinde oluşturulan doğrulama kodlarını al
-        List<VerificationCode> recentVerificationCodes = _verificationCodeDal
-            .GetAllAsync(c => c.CreatedAt > oneMinuteAgo)
-            .GetAwaiter()
-            .GetResult();
-
-// 1 dakikadan eski doğrulama kodlarını sil
+        List<VerificationCode> recentVerificationCodes = await _verificationCodeDal.GetAllAsync(c => c.CreatedAt > oneMinuteAgo);
+         
+        
         foreach (var verificationCode in oldVerificationCodes)
         {
-            _verificationCodeDal.DeleteAsync(verificationCode).GetAwaiter().GetResult();
+           await  _verificationCodeDal.DeleteAsync(verificationCode);
         }
         var DbCode = recentVerificationCodes.Where(c => c.UserEmail == userEmail).FirstOrDefault().Code;
         if (code == DbCode)
         {
-            var userToUpdate =  _userService.GetByMail(userEmail).Data;
+            var userResult = await _userService.GetByMailAsync(userEmail);
+            var userToUpdate = userResult.Data;
+            
             userToUpdate.EmailControl = true;
-            _userService.Update(userToUpdate);
-            var deleteToCode = _verificationCodeDal.GetAsync(c => c.Code == code).GetAwaiter().GetResult();
-            _verificationCodeDal.DeleteAsync(deleteToCode).GetAwaiter().GetResult();
+            await _userService.UpdateAsync(userToUpdate);
+            var deleteToCode = await _verificationCodeDal.GetAsync(c => c.Code == code);
+            await _verificationCodeDal.DeleteAsync(deleteToCode);
             return new SuccessResult();
         }
         return new ErrorResult();
@@ -153,7 +155,7 @@ public class AuthManager : IAuthService
     }
     
     
-    private async Task SendEMail(string userName,string email, int verificationCode)
+    private async Task SendEMailAsync(string userName,string email, int verificationCode)
     {
     string image = "../Business/Images/VerificationImage.png";
     string body = $@"

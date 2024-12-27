@@ -5,8 +5,8 @@ namespace Business.Abstract;
 
 public interface IAdminService
 {
-    IDataResult<List<Admin>> GetAll();
-    IResult Delete(Admin product);
-    IDataResult<Admin> GetById(Guid id);
-    IResult Add(Admin product);
+    Task<IDataResult<List<Admin>>> GetAllAsync();
+    Task<IResult> DeleteAsync(Admin admin);
+    Task<IDataResult<Admin>> GetByIdAsync(Guid id);
+    Task<IResult> AddAsync(Admin admin);
 }

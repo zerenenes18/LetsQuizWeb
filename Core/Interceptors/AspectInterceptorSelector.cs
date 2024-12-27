@@ -3,7 +3,6 @@ using Castle.DynamicProxy;
 
 namespace Core.Interceptors;
 
-
 public class AspectInterceptorSelector : IInterceptorSelector
 {
     public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)

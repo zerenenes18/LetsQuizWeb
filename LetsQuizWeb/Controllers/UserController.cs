@@ -14,16 +14,16 @@ public class UserController : Controller
             _userService = userService;
     }
     // GET
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         return View();
     }
     
     
     [HttpGet]
-    public IActionResult GetALl()
+    public async Task<IActionResult> GetALl()
     {
-       var users = _userService.GetAll();
+       var users = await _userService.GetAllAsync();
        
        return Ok(users);
     }

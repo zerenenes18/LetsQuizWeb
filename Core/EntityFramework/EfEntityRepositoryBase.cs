@@ -24,8 +24,10 @@ namespace Core.EntityFramework
 
         public async Task DeleteAsync(TEntity entity)
         {
-            _context.Entry(entity).State = EntityState.Deleted;
+            var deletedEntity = _context.Entry(entity);
+            deletedEntity.State = EntityState.Deleted;
             await _context.SaveChangesAsync();
+            
         }
 
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter)

@@ -48,10 +48,6 @@
               "target": "Package",
               "version": "[5.1.1, )"
             },
-            "Castle.DynamicProxy": {
-              "target": "Package",
-              "version": "[2.2.0, )"
-            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.0, )"

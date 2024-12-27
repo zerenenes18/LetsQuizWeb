@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="~/css/quiz.css" />
+    
+    <style>
+        
+        .right-panel{
+            margin-bottom: 60px !important;
+        }
+        .left-panel{
+            margin-bottom: 60px !important;
+        }
+    </style>
+    
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <!-- Sol Panel (Eski Quizler) -->
+        <div class="col-md-4">
+            <div class="left-panel">
+                <h5 class="text-center">Existing Quizzes</h5>
+                <div id="quizList">
+                    
+                    <!-- Dinamik olarak quizler buraya eklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Panel (Yeni Quiz Ekleme) -->
+        <div class="col-md-8">
+            <div class="right-panel">
+                <h5 class="text-center">Add New Quiz</h5>
+                <form id="addQuizForm">
+                    <div class="form-group">
+                        <label for="lecture">Select Lecture</label>
+                        <select id="lecture" class="form-control">
+                            <!-- Dinamik olarak dersler buraya eklenecek -->
+                        </select>
+                        <a href="#" id="addNewLecture" class="d-block mt-2 text-primary">New</a>
+                    </div>
+                    <div class="form-group">
+                        <label for="quizName">Quiz Name</label>
+                        <input type="text" id="quizName" class="form-control" placeholder="Enter quiz name" required>
+                    </div>
+                    <button type="submit" class="btn add-quiz-btn w-100">Add Quiz</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        
+        const loadingIndicator = `
+            <div id="loadingIndicator" class="d-flex justify-content-center align-items-center" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        `;
+        $('body').append(loadingIndicator);
+        loadQuizzesAndLectures();
+
+        function loadQuizzesAndLectures() {
+            $.ajax({
+                url: '/Quiz/GetQuizzesPageData',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                success: function (data) {
+                    // Quizleri listele
+                    
+                    console.log(data);
+                    
+                    $('#quizList').empty();
+                    if (data.adminQuizzesModel.length === 0) {
+                        const noQuizMessage = `
+                        <div class="alert alert-warning text-center" role="alert">
+                            No quizzes found!
+                        </div>
+                    `;
+                        $('#quizList').append(noQuizMessage);
+                    } else {
+                        data.adminQuizzesModel.forEach(function (quiz) {
+                            const quizCard = `
+                            <div class="quiz-card" data-quiz-name="${quiz.quizName}">
+                                <h6>${quiz.quizName}</h6>
+                                <p>Lecture: ${quiz.lectureName}</p>
+                            </div>
+                        `;
+                            $('#quizList').append(quizCard);
+                        });
+                    }
+
+                    // Dersleri dropdown'a ekle
+                    $('#lecture').empty();
+                    if (data.lectureList.length === 0) {
+                        const noLectureMessage = `
+                        <option value="">No lectures available</option>
+                    `;
+                        $('#lecture').append(noLectureMessage);
+                    } else {
+                        data.lectureList.forEach(function (lectureName) {
+                            const option = `<option value="${lectureName}">${lectureName}</option>`;
+                            $('#lecture').append(option);
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load data!', 'error');
+                },
+                complete: function () {
+                    // Yükleniyor işaretini kaldır
+                    $('#loadingIndicator').remove();
+                }
+            });
+        }
+        
+
+        function loadQuizContent(quizName) {
+            $.ajax({
+                url: '/Quiz/GetQuizContent',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                data: { quizName: quizName },
+                success: function (data) {
+                    const rightPanel = $('.right-panel');
+                    rightPanel.empty(); // Sağ paneli temizle
+
+                    // Quiz içeriğini oluştur
+                    const quizContent = `
+            <div class="card shadow-lg p-4 mb-4 bg-white rounded">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title text-primary">${data.quizName}</h3>
+                    <button id="addQuestionBtn" class="btn btn-success btn-sm">Add Question</button>
+                </div>
+                <h5 class="text-muted mb-3">Lecture: ${data.lectureName}</h5>
+                <h4 class="mt-4">Questions:</h4>
+                <div>
+                    ${data.questions.map((question, index) => `
+                        <div class="question-card border rounded p-3 my-3" style="background-color: #f9f9f9;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="text-secondary">Question ${index + 1}</h5>
+                                <div>
+                                    <button class="btn btn-warning btn-sm addOptionBtn" data-question-id="${question.questionId}">Add Option</button>
+                                    <button class="btn btn-danger btn-sm deleteQuestionBtn" data-question-id="${question.questionId}">Delete</button>
+                                </div>
+                            </div>
+                            <p><strong>${question.questionText}</strong></p>
+                            ${question.questionImagePath ?
+                        `<img src="${question.questionImagePath}" alt="Question Image" class="img-fluid rounded mb-2">` : ''}
+                            <p><strong>Score:</strong> ${question.questionScore}</p>
+                            <p><strong>Time:</strong> ${question.questionSecondTime} seconds</p>
+                            <h6 class="mt-3">Options:</h6>
+                            <ul class="list-group">
+                                ${question.options.map(option => `
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            ${option.optionText}
+                                            ${option.optionImagePath ?
+                        `<img src="${option.optionImagePath}" alt="Option Image" class="img-thumbnail ms-2" style="max-width: 50px; height: auto;">` : ''}
+                                        </div>
+                                        <button class="btn btn-danger btn-sm deleteOptionBtn" data-option-id="${option.optionId}">
+                                        <i class="fa"></i>
+</button>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            `;
+
+                    rightPanel.append(quizContent);
+
+                    // Add Question button click event
+                    $('#addQuestionBtn').click(function () {
+                        addNewQuestion(quizName);
+                    });
+
+                    // Add Option button click event
+                    $('.addOptionBtn').click(function () {
+                        const questionId = $(this).data('question-id');
+                        addNewOption(questionId, quizName);
+                    });
+
+                    // Delete Question button click event
+                    $('.deleteQuestionBtn').click(function () {
+                        const questionId = $(this).data('question-id');
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: 'Do you want to delete this question?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, delete it!',
+                            cancelButtonText: 'No, keep it'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.ajax({
+                                    url: '/Quiz/DeleteQuestion',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                                    },
+                                    data: JSON.stringify({ QuestionId: questionId }),
+                                    contentType: 'application/json',
+                                    success: function () {
+                                        Swal.fire('Deleted!', 'The question has been deleted.', 'success').then(() => {
+                                            loadQuizContent(quizName); // İçeriği yeniden yükle
+                                        });
+                                    },
+                                    error: function () {
+                                        Swal.fire('Error', 'Failed to delete the question.', 'error');
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    
+                    
+                    
+
+                    // Delete Option button click event
+                    $('.deleteOptionBtn').click(function () {
+                        const optionId = $(this).data('option-id');
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: 'Do you want to delete this option?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, delete it!',
+                            cancelButtonText: 'No, keep it'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.ajax({
+                                    url: '/Quiz/DeleteOption',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                                    },
+                                    data: JSON.stringify({ OptionId: optionId }),
+                                    contentType: 'application/json',
+                                    success: function () {
+                                        Swal.fire('Deleted!', 'The option has been deleted.', 'success').then(() => {
+                                            loadQuizContent(quizName); // İçeriği yeniden yükle
+                                        });
+                                    },
+                                    error: function () {
+                                        Swal.fire('Error', 'Failed to delete the option.', 'error');
+                                    }
+                                });
+                            }
+                        });
+                    });
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load quiz content!', 'error');
+                }
+            });
+        }
+        function addNewQuestion(quizName) {
+            Swal.fire({
+                title: 'Add New Question',
+                html: `
+            <form id="addQuestionForm">
+                <div class="form-group">
+                    <label for="questionText">Question Text</label>
+                    <input type="text" id="questionText" class="form-control" placeholder="Enter question text" required>
+                </div>
+                <div class="form-group">
+                    <label for="questionScore">Score</label>
+                    <input type="number" id="questionScore" class="form-control" placeholder="Enter score" required>
+                </div>
+                <div class="form-group">
+                    <label for="questionTime">Time (in seconds)</label>
+                    <input type="number" id="questionTime" class="form-control" placeholder="Enter time in seconds" required>
+                </div>
+                <div class="form-group">
+                    <label for="questionImage">Question Image URL (optional)</label>
+                    <input type="text" id="questionImage" class="form-control" placeholder="Enter image URL">
+                </div>
+            </form>
+        `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Add',
+                preConfirm: () => {
+                    const questionText = $('#questionText').val();
+                    const questionScore = $('#questionScore').val();
+                    const questionTime = $('#questionTime').val();
+                    const questionImage = $('#questionImage').val();
+
+                    if (!questionText || !questionScore || !questionTime) {
+                        Swal.showValidationMessage('Please fill out all required fields');
+                        return false;
+                    }
+
+                    return {
+                        QuestionText: questionText,
+                        QuestionScore: parseInt(questionScore, 10),
+                        QuestionSecondTime: parseInt(questionTime, 10),
+                        QuestionImagePath: questionImage || null
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const newQuestion = result.value;
+
+                    $.ajax({
+                        url: '/Quiz/AddQuestion',
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                        },
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            QuizName: quizName,
+                            Question: newQuestion
+                        }),
+                        success: function () {
+                            Swal.fire('Success', 'Question added successfully!', 'success').then(() => {
+                                loadQuizContent(quizName);
+                            });
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Failed to add question!', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        function addNewOption(questionId, quizName) {
+            Swal.fire({
+                title: 'Add Options',
+                html: `
+            <form id="addOptionForm">
+                <div id="optionsContainer">
+                    <div class="form-group">
+                        <label for="optionText">Option Text</label>
+                        <input type="text" class="form-control optionText" placeholder="Enter option text" required>
+                        <label for="optionImage">Option Image URL (optional)</label>
+                        <input type="text" class="form-control optionImage" placeholder="Enter option image URL">
+                        <div class="form-check mt-2">
+                            <input type="checkbox" class="form-check-input optionIsTrue" id="isTrueCheck">
+                            <label class="form-check-label" for="isTrueCheck">Is True</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="addNewOption" class="btn btn-sm btn-primary mt-2">Add New Option</button>
+            </form>
+        `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Add',
+                preConfirm: () => {
+                    const options = [];
+                    $('#optionsContainer .form-group').each(function () {
+                        const optionText = $(this).find('.optionText').val();
+                        const optionImage = $(this).find('.optionImage').val();
+                        const isTrue = $(this).find('.optionIsTrue').is(':checked'); // Checkbox kontrolü
+                        if (optionText) {
+                            options.push({
+                                OptionText: optionText,
+                                OptionImagePath: optionImage || null,
+                                IsTrue: isTrue // Checkbox değeri
+                            });
+                        }
+                    });
+
+                    if (options.length === 0) {
+                        Swal.showValidationMessage('Please add at least one option');
+                        return false;
+                    }
+
+                    return options;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const options = result.value;
+
+                    $.ajax({
+                        url: '/Quiz/AddOptions',
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                        },
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            QuestionId: questionId,
+                            Options: options
+                        }),
+                        success: function () {
+                            Swal.fire('Success', 'Options added successfully!', 'success').then(() => {
+                                loadQuizContent(quizName);
+                            });
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Failed to add options!', 'error');
+                        }
+                    });
+                }
+            });
+
+            // Add new option dynamically
+            $('#addNewOption').click(function () {
+                $('#optionsContainer').append(`
+            <div class="form-group">
+                <label for="optionText">Option Text</label>
+                <input type="text" class="form-control optionText" placeholder="Enter option text" required>
+                <label for="optionImage">Option Image URL (optional)</label>
+                <input type="text" class="form-control optionImage" placeholder="Enter option image URL">
+                <div class="form-check mt-2">
+                    <input type="checkbox" class="form-check-input optionIsTrue">
+                    <label class="form-check-label">Is True</label>
+                </div>
+            </div>
+        `);
+            });
+        }
+
+// Tıklama olayını dinlemek için
+        $(document).on('click', '.quiz-card', function () {
+            const quizName = $(this).data('quiz-name');
+            loadQuizContent(quizName);
+        });
+
+        $('#addQuizForm').submit(function (e) {
+            e.preventDefault(); // Sayfanın yeniden yüklenmesini engeller
+
+            const quizName = $('#quizName').val();
+            const lectureName = $('#lecture').val();
+
+            if (!quizName || !lectureName) {
+                Swal.fire('Error', 'Please fill out all fields!', 'error');
+                return;
+            }
+
+            const formData = {
+                QuizName: quizName,
+                LectureName: lectureName
+            };
+
+            $.ajax({
+                url: '/Quiz/AddQuiz', // Backend API endpoint'i
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken') // Authentication token'ı ekleyin
+                },
+                contentType: 'application/json', // JSON formatında veri gönderiliyor
+                data: JSON.stringify(formData),
+                success: function () {
+                    Swal.fire('Success', 'Quiz added successfully!', 'success').then(() => {
+                        location.reload(); // Sayfayı yenileyerek listeyi günceller
+                    });
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to add quiz!', 'error');
+                }
+            });
+        });
+        
+        // Yeni Lecture ekleme popup'ı
+        $('#addNewLecture').click(function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Add New Lecture',
+                input: 'text',
+                inputLabel: 'Lecture Name',
+                inputPlaceholder: 'Enter lecture name',
+                showCancelButton: true,
+                confirmButtonText: 'OK',
+                preConfirm: (lectureName) => {
+                    if (!lectureName) {
+                        Swal.showValidationMessage('Lecture name cannot be empty');
+                    }
+                    return lectureName;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const lectureName = result.value;
+                    // Lecture adı gönderiliyor
+                    $.ajax({
+                        url: '/Quiz/AddLecture',
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                        },
+                        data: { name: lectureName },
+                        success: function () {
+                            Swal.fire('Success', 'Lecture added successfully!', 'success').then(() => {
+                                location.reload(); // Sayfayı yenile
+                            });
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Failed to add lecture!', 'error');
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

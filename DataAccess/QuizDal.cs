@@ -5,7 +5,7 @@ using LetsQuizCore.Entities;
 
 namespace DataAccess
 {
-    public class QuizDal  : EfEntityRepositoryBase<Admin,LetsQuizDbContext>, IAdminDal
+    public class QuizDal  : EfEntityRepositoryBase<Quiz,LetsQuizDbContext>, IQuizDal
     {
         public QuizDal(LetsQuizDbContext context) : base(context)
         {

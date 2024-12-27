@@ -1,5 +1,6 @@
 using Business.Abstract;
 using Business.Constants;
+using Business.Operations;
 using Core.Entities;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -10,15 +11,21 @@ namespace Business;
 public class UserManager : IUserService
 {
     IUserDal _userDal;
-    public UserManager(IUserDal userDal)
+    private readonly IUserOperationClaimService _userOperationClaimService;
+
+    public UserManager(IUserDal userDal,IUserOperationClaimService userOperationClaimService)
     {
         _userDal = userDal;
+        _userOperationClaimService = userOperationClaimService;
+        
     }
-    public IDataResult<List<User>> GetAll()
+    
+    [SecuredOperation("admin,student")]
+    public async Task<IDataResult<List<User>>> GetAllAsync()
     {
         try
         {
-            var data = _userDal.GetAllAsync().GetAwaiter().GetResult();
+            var data =await  _userDal.GetAllAsync();
             return new SuccessDataResult<List<User>>(data, "Admin list successfully retrieved");
         }
         catch (Exception ex)
@@ -27,21 +34,21 @@ public class UserManager : IUserService
         }
 
     }
-    public IResult Delete(User user)
+    public async Task<IResult> DeleteAsync(User user)
     {
-        _userDal.DeleteAsync(user).GetAwaiter().GetResult();
+        await _userDal.DeleteAsync(user);
         return new SuccessResult();
     }
 
-    public IDataResult<User> GetById(Guid id)
+    public async Task<IDataResult<User>> GetByIdAsync(Guid id)
     {
-        var user = _userDal.GetAllAsync(x=> x.Id == id).GetAwaiter().GetResult();
+        var user = await _userDal.GetAllAsync(x => x.Id == id);
         return new SuccessDataResult<User>(user.FirstOrDefault(), "Admin successfully retrieved");
     }
 
-    public  IDataResult<User> GetByMail(string email)
+    public  async Task<IDataResult<User>> GetByMailAsync(string email)
     {
-        User user = _userDal.GetAsync(u => u.Email == email).GetAwaiter().GetResult();
+        User user = await _userDal.GetAsync(u => u.Email == email);
         if (user != null)
         {
             return new SuccessDataResult<User>(user,Messages.UserAlreadyExists);
@@ -53,9 +60,9 @@ public class UserManager : IUserService
        
     }
 
-    public IDataResult<User> GetByUserName(string userName)
+    public async Task<IDataResult<User>> GetByUserNameAsync(string userName)
     {
-        User user = _userDal.GetAsync(u => u.UserName == userName).GetAwaiter().GetResult();
+        User user = await _userDal.GetAsync(u => u.UserName == userName);
         if (user != null)
         {
             return new SuccessDataResult<User>(user,Messages.UserAlreadyExists);
@@ -66,29 +73,27 @@ public class UserManager : IUserService
         }
     }
 
-    public IResult Add(User user)
+    public async Task<IResult> AddAsync(User user)
     {
-        _userDal.AddAsync(user).GetAwaiter().GetResult();
+        await _userDal.AddAsync(user);
+        UserOperationClaim userOperationClaim = new UserOperationClaim
+        {
+            UserId = user.Id
+        };
+        _userOperationClaimService.AddAsync(userOperationClaim, user.Role);
+        
         return new SuccessResult("Admin successfully added.");
     }
 
-    public IResult Update(User user)
+    public async Task<IResult> UpdateAsync(User user)
     {
-        _userDal.UpdateAsync(user).GetAwaiter().GetResult();
+        await _userDal.UpdateAsync(user);
         return new SuccessResult();
     }
 
-    public IDataResult<List<OperationClaim>> GetClaims(User user)
+  
+    public async Task<IDataResult<List<OperationClaim>>> GetClaimsAsync(User user)
     {
-        var claims = _userDal.GetClaims(user);
-        if (claims.Count == 0)
-        {
-            return new SuccessDataResult<List<OperationClaim>>(claims);
-        }
-        else
-        {
-            return new ErrorDataResult<List<OperationClaim>>(Messages.NotFound);
-        }
-        
+        return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user)); 
     }
 }

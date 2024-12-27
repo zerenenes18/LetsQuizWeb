@@ -13,11 +13,11 @@ public class StudentManager : IStudentService
     {
         _studentDal = studentDal;
     }
-    public IDataResult<List<Student>> GetAll()
+    public async Task<IDataResult<List<Student>>> GetAllAsync()
     {
         try
         {
-            var data = _studentDal.GetAllAsync().GetAwaiter().GetResult();
+            var data = await _studentDal.GetAllAsync();
             return new SuccessDataResult<List<Student>>(data, "Admin list successfully retrieved");
         }
         catch (Exception ex)
@@ -26,21 +26,21 @@ public class StudentManager : IStudentService
         }
 
     }
-    public IResult Delete(Student student)
+    public async Task<IResult> DeleteAsync(Student student)
     {
-        _studentDal.DeleteAsync(student).GetAwaiter().GetResult();
+        await _studentDal.DeleteAsync(student);
         return new SuccessResult();
     }
 
-    public IDataResult<Student> GetById(Guid id)
+    public async Task<IDataResult<Student>> GetByIdAsync(Guid id)
     {
-        var admin = _studentDal.GetAllAsync(x=> x.Id == id).GetAwaiter().GetResult();
+        var admin = await _studentDal.GetAllAsync(x => x.Id == id);
         return new SuccessDataResult<Student>(admin.FirstOrDefault(), "Admin successfully retrieved");
     }
 
-    public IResult Add(Student student)
+    public async Task<IResult> AddAsync(Student student)
     {
-        _studentDal.AddAsync(student).GetAwaiter().GetResult();
+        await _studentDal.AddAsync(student);
         return new SuccessResult("Admin successfully added.");
     }
 }

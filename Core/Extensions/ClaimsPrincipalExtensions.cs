@@ -19,10 +19,13 @@ public static class ClaimsPrincipalExtensions
     
     public static string ClaimUserName(this ClaimsPrincipal principal)
     {
-        var email = principal.Claims(ClaimTypes.Name)[0];
-        return email;
+       return principal.Claims(ClaimTypes.Name)[0];
     }
-
+    public static string ClaimIdentifier(this ClaimsPrincipal principal)
+    {
+       return principal.Claims(ClaimTypes.NameIdentifier)[0];
+       
+    }
 
     public static List<string> ClaimRoles(this ClaimsPrincipal claimsPrincipal)
     {

@@ -20,6 +20,16 @@
 /Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/DataAccess.pdb
 /Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Core.dll
 /Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Entites.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.AspNetCore.Http.Abstractions.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.AspNetCore.Http.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.Extensions.Features.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.AspNetCore.Http.Features.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.Net.Http.Headers.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.AspNetCore.WebUtilities.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.AspNetCore.Connections.Abstractions.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.Extensions.ObjectPool.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.AspNetCore.Http.Extensions.dll
+/Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Microsoft.Extensions.FileProviders.Abstractions.dll
 /Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Core.pdb
 /Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/bin/Debug/net8.0/Entites.pdb
 /Users/eneszeren/RiderProjects/LetsQuizOld/LetsQuizWeb/DataAccess/obj/Debug/net8.0/DataAccess.csproj.AssemblyReference.cache

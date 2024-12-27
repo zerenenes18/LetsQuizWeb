@@ -11,7 +11,9 @@ namespace LetsQuizCore.Entities
     public class Option : IEntity
     {
         public Guid Id { get; set; }
-        public Guid QuizId { get; set; }
+        public Guid QuestionId { get; set; }
+        
+        public bool  IsTrue { get; set; }
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
 

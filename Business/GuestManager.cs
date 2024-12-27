@@ -1,44 +1,44 @@
+using Business.Abstract;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using LetsQuizCore.Entities;
 
 namespace Business;
 
-public class GuestManager
+public class GuestManager : IGuestService
 {
     IGuestDal _guestDal;
     public GuestManager(IGuestDal guestDal)
     {
         _guestDal = guestDal;
     }
-    public IDataResult<List<Guest>> GetAll()
+    public async Task<IDataResult<List<Guest>>> GetAllAsync()
     {
         try
         {
-            var data = _guestDal.GetAllAsync().GetAwaiter().GetResult();
+            var data = await _guestDal.GetAllAsync();
             return new SuccessDataResult<List<Guest>>(data, "Guest list successfully retrieved");
         }
         catch (Exception ex)
         {
             return new ErrorDataResult<List<Guest>>(null, ex.Message);
         }
-
     }
-    public IResult Delete(Guest guest)
+    public async Task<IResult> DeleteAsync(Guest guest)
     {
-        _guestDal.DeleteAsync(guest).GetAwaiter().GetResult();
+        await _guestDal.DeleteAsync(guest);
         return new SuccessResult();
     }
 
-    public IDataResult<Guest> GetById(Guid id)
+    public async Task<IDataResult<Guest>> GetByIdAsync(Guid id)
     {
-        var guest = _guestDal.GetAllAsync(x=> x.Id == id).GetAwaiter().GetResult();
+        var guest = await _guestDal.GetAllAsync(x => x.Id == id);
         return new SuccessDataResult<Guest>(guest.FirstOrDefault(), "Guest successfully retrieved");
     }
 
-    public IResult Add(Guest guest)
+    public async Task<IResult> AddAsync(Guest guest)
     {
-        _guestDal.AddAsync(guest).GetAwaiter().GetResult();
+        await _guestDal.AddAsync(guest);
         return new SuccessResult("Guest successfully added.");
     }
 }

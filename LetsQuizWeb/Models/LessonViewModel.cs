@@ -21,9 +21,9 @@ public class QuizViewModel
 public class ScoreViewModel
 {
     public string UserName { get; set; } // Kullanıcı adı
-    public int Score { get; set; } // Skor
+    public double Score { get; set; } // Skor
     public string QuizName { get; set; } // Quiz adı
     public string QuizLecture { get; set; } // Quizin dersi
     public decimal SuccessRate { get; set; } // Başarı oranı
-    public int Points { get; set; } // Puan
+    public double Points { get; set; } // Puan
 }

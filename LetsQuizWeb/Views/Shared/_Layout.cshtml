@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/LetsQuizWeb.styles.css" asp-append-version="true"/>
     <style>
-        /* Şeffaf Navbar */
-        /* Şeffaf Navbar */
+
+            /* Şeffaf Navbar */
         .navbar {
             background: rgba(255, 255, 255, 0.85); /* Hafif şeffaf beyaz */
             z-index: 10; /* Üstte görünmesi için */
@@ -17,16 +17,21 @@
             position: fixed; /* Sabit pozisyon */
             top: 0; /* Ekranın üstüne sabitler */
             left: 0;
+            margin-top: 10px; !important;
             width: 100%; /* Tüm genişliği kapsar */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
         }
 
         .navbar-brand, .nav-link {
             color: #000 !important; /* Metin rengini koyu yap */
+            text-decoration: none; /* Altı çizgiyi kaldır */
+            transition: color 0.3s ease; /* Renk geçiş efekti */
         }
 
+        /* Navbar Link Hover Durumu */
         .navbar-brand:hover, .nav-link:hover {
-            color: #007bff !important; /* Hover durumunda renk değişimi */
+            color: #ff6f61 !important; /* Hover durumunda renk değişimi (hoş bir turuncu) */
+            text-decoration: none; /* Hover'da altı çizgiyi kaldır */
         }
 
         /* Alt alan */
@@ -55,12 +60,32 @@
             z-index: -100; /* İçerik üzerinde görünmemesi için */
             background-size: cover;
         }
-        
+
         button {
             border-radius: 10px !important;
         }
-      
+        
+        .my-button-login, .my-button-logout {
+            margin-left: 20px; !important;
+            
+        }
+        
+        .my-button-logout{
+            background: linear-gradient(45deg, #ff7f50, #ffa07a);
+        }
+        .my-button-login{
+            background-color: #4caf50;
+        }
+        .my-button{
+            margin-right: 15px;
+            background: linear-gradient(45deg, #6c63ff, #57c1eb);
+        }
+        /* Hover durumunda renk beyaz olsun */
+        .my-button:hover, .my-button-login:hover, .my-button-logout:hover {
+            color: white !important;
+        }
     </style>
+
 </head>
 
 <body>
@@ -81,12 +106,19 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
                 </ul>
+           
+                <ul class="navbar-nav">
+                    <!-- Login/Logout Button -->
+                    <li class="nav-item">
+                        <button id="Btn" class="nav-link text-dark my-button" onclick="goToQuiz()">My Quizzes</button>
+                    </li>
+                </ul>
               
                 <ul class="navbar-nav">
                     <!-- Login/Logout Button -->
                     <li class="nav-item">
-                        <button id="loginBtn" class="nav-link text-dark" onclick="handleLogin()">Log in</button>
-                        <button id="logoutBtn" class="nav-link text-dark" onclick="handleLogout()" style="display: none;">Log out</button>
+                        <button id="loginBtn" class="nav-link  text-dark  my-button-login" onclick="handleLogin()">Log in</button>
+                        <button id="logoutBtn" class="nav-link my-button-logout text-dark" onclick="handleLogout()" style="display: none;">Log out</button>
                     </li>
                 </ul>
             </div>
@@ -108,7 +140,49 @@
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // Beyaz liste URL'leri
+    const whiteListedPaths = [
+        "/Login/Index",
+        "/Auth/Register",
+        "/Auth/Verification"
+    ];
+
+    // Kullanıcının bulunduğu yol
+    const currentPath = window.location.pathname;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const authToken = localStorage.getItem("authToken");
+
+        // Eğer mevcut yol beyaz listedeyse kontrol yapma
+        if (whiteListedPaths.includes(currentPath)) {
+            return;
+        }
+
+        if (!authToken) {
+            Swal.fire('Error', 'Your session has expired. Please log in again.', 'error').then(() => {
+                window.location.href = '/Login/Index';
+            });
+        }
+    });
+
+    // AJAX Setup: Authorization Header
+    $.ajaxSetup({
+        beforeSend: function (xhr) {
+            const token = localStorage.getItem('authToken'); // Token'i localStorage'dan al
+            if (token) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token); // Authorization başlığı ekle
+            } else if (!whiteListedPaths.includes(currentPath)) {
+                // Eğer token yoksa ve beyaz listede değilse oturumun sona erdiğini bildir
+                Swal.fire('Error', 'Your session has expired. Please log in again.', 'error').then(() => {
+                    window.location.href = '/Login/Index'; // Login sayfasına yönlendir
+                });
+                return false; // İsteği iptal et
+            }
+        }
+    });
+
     // Navbar'daki butonları kontrol et
     document.addEventListener("DOMContentLoaded", () => {
         const loginBtn = document.getElementById("loginBtn");
@@ -136,10 +210,19 @@
     // Logout Butonuna Basıldığında
     function handleLogout() {
         localStorage.removeItem("authToken"); // Auth token'i sil
-        //alert("Successfully logged out!");
         window.location.reload(); // Sayfayı yenile
     }
+
+    function goToQuestion() {
+        window.location.href = "/Question/Index"; // Question/Index sayfasına yönlendir
+    }
+
+    function goToQuiz() {
+        window.location.href = "/Quiz/Index"; // Quiz/Index sayfasına yönlendir
+    }
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>

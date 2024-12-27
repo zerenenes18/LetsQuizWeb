@@ -13,5 +13,7 @@ namespace LetsQuizCore.Entities
         public Guid QuizId { get; set; }
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
+        public int QuestionScore { get; set; }
+        public int QuestionSecondTime { get; set; }
     }
 }

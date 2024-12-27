@@ -8,39 +8,43 @@ namespace Business;
 
 public class AdminManager : IAdminService
 {
-    IAdminDal _adminDal;
+    private readonly IAdminDal _adminDal;
+
     public AdminManager(IAdminDal adminDal)
     {
         _adminDal = adminDal;
     }
-    public IDataResult<List<Admin>> GetAll()
+
+    public async Task<IDataResult<List<Admin>>> GetAllAsync()
     {
         try
         {
-            var data = _adminDal.GetAllAsync().GetAwaiter().GetResult();
+            var data = await _adminDal.GetAllAsync();
             return new SuccessDataResult<List<Admin>>(data, "Admin list successfully retrieved");
         }
         catch (Exception ex)
         {
             return new ErrorDataResult<List<Admin>>(null, ex.Message);
         }
-
-    }
-    public IResult Delete(Admin admin)
-    {
-        _adminDal.DeleteAsync(admin).GetAwaiter().GetResult();
-        return new SuccessResult();
     }
 
-    public IDataResult<Admin> GetById(Guid id)
+    public async Task<IResult> DeleteAsync(Admin admin)
     {
-        var admin = _adminDal.GetAllAsync(x=> x.Id == id).GetAwaiter().GetResult();
-        return new SuccessDataResult<Admin>(admin.FirstOrDefault(), "Admin successfully retrieved");
+        await _adminDal.DeleteAsync(admin);
+        return new SuccessResult("Admin successfully deleted.");
     }
 
-    public IResult Add(Admin admin)
+    public async Task<IDataResult<Admin>> GetByIdAsync(Guid id)
     {
-        _adminDal.AddAsync(admin).GetAwaiter().GetResult();
-      return new SuccessResult("Admin successfully added.");
+        var admin = await _adminDal.GetAllAsync(x => x.Id == id);
+        return admin.FirstOrDefault() != null
+            ? new SuccessDataResult<Admin>(admin.FirstOrDefault(), "Admin successfully retrieved")
+            : new ErrorDataResult<Admin>("Admin not found");
+    }
+
+    public async Task<IResult> AddAsync(Admin admin)
+    {
+        await _adminDal.AddAsync(admin);
+        return new SuccessResult("Admin successfully added.");
     }
 }

@@ -5,9 +5,9 @@ namespace Business.Abstract;
 
 public interface IStudentService
 {
-    IDataResult<List<Student>> GetAll();
-    IResult Delete(Student student);
-    IDataResult<Student> GetById(Guid id);
-    IResult Add(Student student);
+    Task<IDataResult<List<Student>>> GetAllAsync();
+    Task<IResult> DeleteAsync(Student student);
+    Task<IDataResult<Student>> GetByIdAsync(Guid id);
+    Task<IResult> AddAsync(Student student);
     
 }

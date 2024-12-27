@@ -17,15 +17,15 @@ public class AdminController : Controller
     }
     
     
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         // return View();
-        var result = _adminService.GetAll();
+        var result = await _adminService.GetAllAsync();
         return View(result.Data);
     }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             return Ok("Admin erişim sağladı!");
         }

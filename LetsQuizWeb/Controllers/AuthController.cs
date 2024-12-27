@@ -17,26 +17,26 @@ public class AuthController : Controller
     
     
     // GET
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         return View();
     }
     
-    public IActionResult Verification()
+    public async Task<IActionResult> Verification()
     {
         return View();
     }
 
 
-    public ActionResult Login([FromBody]UserForLoginDto userForLoginDto)
+    public async Task<IActionResult> Login([FromBody]UserForLoginDto userForLoginDto)
     {
-        var userToLogin = _authService.Login(userForLoginDto);
+        var userToLogin = await _authService.LoginAsync(userForLoginDto);
         if (!userToLogin.Success)
         {
             return BadRequest(userToLogin.Message);
         }
 
-        var result = _authService.CreateAccessToken(userToLogin.Data);
+        var result = await _authService.CreateAccessTokenAsync(userToLogin.Data);
         if (result.Success)
         {
             return Ok(result);
@@ -45,21 +45,21 @@ public class AuthController : Controller
         return BadRequest(result.Message);
     }
 
-    public IActionResult Register()
+    public async Task<IActionResult> Register()
     {
         return View();
     }
 
-    public ActionResult UserRegister([FromBody] UserForRegisterDto userForRegisterDto)
+    public async Task<IActionResult> UserRegister([FromBody] UserForRegisterDto userForRegisterDto)
     {
-        var userExists = _authService.UserExists(userForRegisterDto.Email);
+        var userExists = await _authService.UserExistsAsync(userForRegisterDto.Email);
         if (userExists.Success)
         {
             return BadRequest(userExists.Message);
         }
             
-        var registerResult = _authService.Register(userForRegisterDto, userForRegisterDto.Password);
-        var result = _authService.CreateAccessToken(registerResult.Data);
+        var registerResult = await _authService.RegisterAsync(userForRegisterDto, userForRegisterDto.Password);
+        var result = await _authService.CreateAccessTokenAsync(registerResult.Data);
         if (result.Success)
         {
             //_authService.RegisterEmailSendCode();
@@ -69,7 +69,7 @@ public class AuthController : Controller
         return BadRequest(result.Message);
     }
     
-    public ActionResult ControlCode([FromBody] string code)
+    public async Task<IActionResult> ControlCode([FromBody] string code)
     {
         try
         {
@@ -85,7 +85,7 @@ public class AuthController : Controller
             }
 
             // Servis çağrısı
-            var result = _authService.RegisterControlEmailCode(codeValue);
+            var result =  await _authService.RegisterControlEmailCodeAsync(codeValue);
             if (result.Success)
             {
                 return Ok(result);
@@ -99,9 +99,9 @@ public class AuthController : Controller
         }
     }
     
-    public ActionResult SendVerificationCode()
+    public async Task<IActionResult> SendVerificationCode()
     {
-        var result = _authService.RegisterEmailSendCode();
+        var result = await _authService.RegisterEmailSendCodeAsync();
 
         if (result.Success)
         {

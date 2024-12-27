@@ -12,9 +12,9 @@ namespace LetsQuizCore.Entities
     {
         public Guid Id { get; set; }
         public Guid LectureId { get; set; }
+        public string Name { get; set; }
         public Guid AdminId { get; set; }
-        public DateTime StartDate { get; set; }
-       
+        
         
     }
 }

@@ -7,6 +7,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Business.Constants;
+using Core.DependencyResolvers;
+using Core.Extensions;
+using Core.Interceptors;
+using Core.IoC;
 using Core.Utilities.Security.Encryption;
 using Core.Utilities.Security.JWT;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,6 +28,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 {
     containerBuilder.RegisterModule(new AutofacBusinessModule());
 });
+
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
@@ -49,9 +54,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddDbContext<LetsQuizDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LetsQuizDatabase"))
+builder.Services.AddDependencyResolvers(new ICoreModule[]
+    {
+        new CoreModule()
+    }
 );
+
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -74,6 +84,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Index}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

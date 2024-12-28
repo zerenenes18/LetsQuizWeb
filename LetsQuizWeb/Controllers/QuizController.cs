@@ -87,6 +87,7 @@ public class QuizController : Controller
                     OptionId = option.Id,
                     OptionImagePath = option.ImagePath,
                     OptionText = option.Description,
+                    IsTrue = option.IsTrue
                 });
             }
             questionList.Add(
@@ -100,6 +101,7 @@ public class QuizController : Controller
                     Options = optionModelList
                 });
         }
+        contentModel.QuizId = Quiz.Data.Id;
         contentModel.questions = questionList;
         contentModel.LectureName = Lecture.Data.Name;
         contentModel.QuizName = quizName;
@@ -187,16 +189,26 @@ public class QuizController : Controller
     public async Task<IActionResult> DeleteQuestion([FromBody] DeleteQuestionModel model)
     {
        var deletedQuestion = await _questionService.GetByIdAsync(model.QuestionId);
-       _questionService.DeleteAsync(deletedQuestion.Data);
+       await _questionService.DeleteAsync(deletedQuestion.Data);
        
        return Ok("Question deleted successfully.");
+    }
+    
+    
+    [HttpDelete]
+    public async Task<IActionResult> DeleteQuiz([FromBody] DeleteQuizModel model)
+    {
+        var deletedQuiz = await _quizService.GetByIdAsync(model.QuizId);
+        await _quizService.DeleteAsync(deletedQuiz.Data);
+       
+        return Ok("Question deleted successfully.");
     }
     
     [HttpDelete]
     public async Task<IActionResult> DeleteOption([FromBody] DeleteOptionModel model)
     {
         var deletedQuestion = await _optionDal.GetAsync(o=>o.Id ==   model.OptionId);
-        _optionDal.DeleteAsync(deletedQuestion);
+        await _optionDal.DeleteAsync(deletedQuestion);
        
         return Ok("Question deleted successfully.");
     }
@@ -310,6 +322,7 @@ public class QuizController : Controller
             var lectureName = await _lectureService.GetByIdAsync(quiz.LectureId);
             adminQuizzes.Add(new AdminQuizzesModel
             {
+                QuizId = quiz.Id,
                 LectureName = lectureName.Data.Name,
                 QuizName = quiz.Name,
             });

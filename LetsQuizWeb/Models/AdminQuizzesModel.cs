@@ -20,6 +20,10 @@ public class DeleteQuestionModel
 {
     public Guid QuestionId { get; set; }
 }
+public class DeleteQuizModel
+{
+    public Guid QuizId { get; set; }
+}
 public class DeleteOptionModel
 {
     public Guid OptionId { get; set; }

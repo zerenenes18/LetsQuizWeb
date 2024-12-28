@@ -1,4 +1,5 @@
 using Business.Abstract;
+using Business.Operations;
 using Core.Extensions;
 using Core.IoC;
 using Core.Utilities.Results;
@@ -56,6 +57,7 @@ public class LectureManager : ILectureService
         return new SuccessResult();
     }
 
+    [SecuredOperation("student")]
     public async Task<IDataResult<List<Lecture>>> GetAdminLecturesAsync()
     {
         var adminId = Guid.Parse(_httpContextAccessor.HttpContext.User.ClaimIdentifier());

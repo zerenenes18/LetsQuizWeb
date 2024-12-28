@@ -11,6 +11,33 @@
     <link rel="stylesheet" href="~/css/quiz.css" />
     
     <style>
+        .quiz-card {
+            display: flex;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .quiz-info {
+            width: 90%;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .quiz-delete {
+            width: 10%;
+            background-color: #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+
+        .quiz-delete:hover {
+            background-color: #c82333;
+        }
         
         .right-panel{
             margin-bottom: 60px !important;
@@ -78,41 +105,41 @@
                     'Authorization': 'Bearer ' + localStorage.getItem('authToken')
                 },
                 success: function (data) {
-                    // Quizleri listele
-                    
-                    console.log(data);
-                    
+                    // Quizleri temizle ve doldur
                     $('#quizList').empty();
-                    if (data.adminQuizzesModel.length === 0) {
+                    if (!data.adminQuizzesModel || data.adminQuizzesModel.length === 0) {
                         const noQuizMessage = `
-                        <div class="alert alert-warning text-center" role="alert">
-                            No quizzes found!
-                        </div>
-                    `;
+                    <div class="alert alert-warning text-center" role="alert">
+                        No quizzes found!
+                    </div>`;
                         $('#quizList').append(noQuizMessage);
                     } else {
                         data.adminQuizzesModel.forEach(function (quiz) {
                             const quizCard = `
-                            <div class="quiz-card" data-quiz-name="${quiz.quizName}">
+                        <div class="quiz-card" data-quiz-id="${quiz.quizId}" data-quiz-name="${quiz.quizName}">
+                            <div class="quiz-info">
                                 <h6>${quiz.quizName}</h6>
                                 <p>Lecture: ${quiz.lectureName}</p>
                             </div>
-                        `;
+                            <div class="quiz-delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
+                        </div>`;
                             $('#quizList').append(quizCard);
                         });
                     }
 
-                    // Dersleri dropdown'a ekle
+                    // Ders listesini temizle ve doldur
                     $('#lecture').empty();
-                    if (data.lectureList.length === 0) {
-                        const noLectureMessage = `
-                        <option value="">No lectures available</option>
-                    `;
-                        $('#lecture').append(noLectureMessage);
+                    if (!data.lectureList || data.lectureList.length === 0) {
+                        const noLectureOption = `
+                    <option value="">No lectures available</option>`;
+                        $('#lecture').append(noLectureOption);
                     } else {
                         data.lectureList.forEach(function (lectureName) {
-                            const option = `<option value="${lectureName}">${lectureName}</option>`;
-                            $('#lecture').append(option);
+                            const lectureOption = `
+                        <option value="${lectureName}">${lectureName}</option>`;
+                            $('#lecture').append(lectureOption);
                         });
                     }
                 },
@@ -120,12 +147,10 @@
                     Swal.fire('Error', 'Failed to load data!', 'error');
                 },
                 complete: function () {
-                    // Yükleniyor işaretini kaldır
                     $('#loadingIndicator').remove();
                 }
             });
         }
-        
 
         function loadQuizContent(quizName) {
             $.ajax({
@@ -432,11 +457,48 @@
             });
         }
 
-// Tıklama olayını dinlemek için
-        $(document).on('click', '.quiz-card', function () {
-            const quizName = $(this).data('quiz-name');
+        // Quiz bilgisine tıklandığında quiz içeriğini yükler
+        $(document).on('click', '.quiz-info', function () {
+            const quizName = $(this).closest('.quiz-card').data('quiz-name');
             loadQuizContent(quizName);
         });
+
+// Silme bölgesine tıklandığında quiz silme işlemini yapar
+        $(document).on('click', '.quiz-delete', function () {
+            const quizId = $(this).closest('.quiz-card').data('quiz-id');
+            const quizName = $(this).closest('.quiz-card').data('quiz-name');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `Do you want to delete the quiz "${quizName}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Quiz/DeleteQuiz',
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                        },
+                        contentType: 'application/json',
+                        data: JSON.stringify({ QuizId: quizId }),
+                        success: function () {
+                            Swal.fire('Deleted!', 'The quiz has been deleted.', 'success').then(() => {
+                                loadQuizzesAndLectures();
+                            });
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Failed to delete the quiz!', 'error');
+                        }
+                    });
+                }
+            });
+        });
+// Tıklama olayını dinlemek için
+       
 
         $('#addQuizForm').submit(function (e) {
             e.preventDefault(); // Sayfanın yeniden yüklenmesini engeller

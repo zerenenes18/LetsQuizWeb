@@ -24,9 +24,8 @@ public class HomeController : Controller
     {
 
         List<Score> scoreList = await _scoreDal.GetAllAsync();
-
-       
-
+        scoreList = scoreList.OrderByDescending(score => score.ScoreValue).ToList();
+        
         var scores = new List<ScoreViewModel>();
 
         foreach (var score in scoreList)
@@ -36,7 +35,7 @@ public class HomeController : Controller
                 UserName = score.UserName,
                 Points = score.ScoreValue,
                 QuizName = score.QuizName,
-                QuizLecture = score.QuizName,
+                QuizLecture = score.LectureName,
                 SuccessRate = score.SuccessRate
                 
             });

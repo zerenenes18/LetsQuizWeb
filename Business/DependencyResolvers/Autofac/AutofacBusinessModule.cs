@@ -59,13 +59,13 @@ public class AutofacBusinessModule : Module
                 var configuration = ctx.Resolve<IConfiguration>();
                 var optionsBuilder = new DbContextOptionsBuilder<LetsQuizDbContext>();
                 optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-    
+
                 return new LetsQuizDbContext(optionsBuilder.Options);
             })
-            .AsSelf() // Kendi türü olarak kaydedilir.
-            .As<DbContext>() // DbContext türü olarak kaydedilir.
-            .InstancePerLifetimeScope(); // Her yaşam döngüsünde bir örnek oluşturulur.
-        
+            .AsSelf()
+            .As<DbContext>()
+            .InstancePerDependency(); // Her çözümlemede yeni bir örnek oluşturur
+
         
         
         var assembly = Assembly.GetExecutingAssembly();

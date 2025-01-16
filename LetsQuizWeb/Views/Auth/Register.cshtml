@@ -1,10 +1,9 @@
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Sign Up";
 }
 
 <link rel="stylesheet" href="~/Login/css/register.css"/>
 <div class="container">
-  
     <div class="card shadow-lg">
         <div class="card-body">
             <h4 class="text-center mb-4">Sign Up</h4>
@@ -28,15 +27,18 @@
                 <div class="form-group">
                     <label for="Password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="Password" name="Password" placeholder="Enter your password" required />
+                    <div class="progress mt-2" style="height: 5px;">
+                        <div id="passwordStrengthBar" class="progress-bar" role="progressbar"></div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="PasswordConfirm" class="form-label">Confirm Password</label>
                     <input type="password" class="form-control" id="PasswordConfirm" name="PasswordConfirm" placeholder="Confirm your password" required />
                 </div>
                 <div id="error-message" style="color: red; display: none; text-align: center; margin-bottom: 10px;">
-                    Passwords do not match!
+                    Passwords do not match or password is too weak!
                 </div>
-                <button type="submit" class="btn btn-primary">Sign Up</button>
+                <button type="submit" class="btn btn-primary w-100">Sign Up</button>
             </form>
             <hr class="my-4" />
             <div class="text-center">
@@ -49,46 +51,74 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
-        $(document).ready(function() {
-        $('#registerForm').submit(function(event) {
+    $(document).ready(function () {
+        // Password strength bar update function
+        function updatePasswordStrength(password) {
+            const strengthBar = $('#passwordStrengthBar');
+            const weakRegex = /(?=.*[a-z])|(?=.*[A-Z])|(?=.*\d)|(?=.*[@@$!%*?&])/;
+            const mediumRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)|(?=.*[a-z])(?=.*[A-Z])(?=.*[@@$!%*?&])/;
+            const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%*?&])/;
+
+            strengthBar.removeClass('bg-danger bg-warning bg-success');
+            if (password.length < 5) {
+                strengthBar.addClass('bg-danger').css('width', '25%');
+            } else if (mediumRegex.test(password)) {
+                strengthBar.addClass('bg-warning').css('width', '50%');
+            } else if (strongRegex.test(password)) {
+                strengthBar.addClass('bg-success').css('width', '100%');
+            } else if (weakRegex.test(password)) {
+                strengthBar.addClass('bg-warning').css('width', '50%');
+            } else {
+                strengthBar.css('width', '0%');
+            }
+        }
+
+        // Password strength bar on keyup
+        $('#Password').on('keyup', function () {
+            const password = $(this).val();
+            updatePasswordStrength(password);
+        });
+
+        // Form submission with validations
+        $('#registerForm').submit(function (event) {
             event.preventDefault();
-            var formData = {
+
+            const password = $('#Password').val();
+            const confirmPassword = $('#PasswordConfirm').val();
+
+            if (password.length < 5 || password !== confirmPassword) {
+                $('#error-message').text('Passwords do not match or password is too weak!').show();
+                return; // Stop form submission
+            } else {
+                $('#error-message').hide(); // Hide error message
+            }
+
+            const formData = {
                 Email: $('#Email').val(),
-                Password: $('#Password').val(),
+                Password: password,
                 UserName: $('#UserName').val(),
                 FirstName: $('#FirstName').val(),
                 LastName: $('#LastName').val(),
             };
+
             $.ajax({
                 url: '/Auth/UserRegister',
                 type: 'POST',
-                contentType: 'application/json', // Ensure proper content type
-                dataType: 'json', // Expect JSON in response
-                data: JSON.stringify(formData), // Convert formData to JSON
-                success: function(response) {
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(formData),
+                success: function (response) {
                     if (response.success) {
-                        localStorage.setItem('authToken', response.data.token); // Save token in Local Storage
-                        window.location.href = '/Auth/Verification'; // Redirect to home page
+                        localStorage.setItem('isregisterd', response.data.token);
+                        window.location.href = '/Auth/Verification';
                     } else {
-                        alert('Login failed: ' + response.message);
+                        alert('Registration failed: ' + response.message);
                     }
                 },
-                error: function(xhr, status, error) {
-                    alert('Login request failed: ' + error);
+                error: function (xhr, status, error) {
+                    alert('Registration request failed: ' + error);
                 }
             });
         });
     });
-
-        document.getElementById("registerForm").addEventListener("submit", function(event) {
-            const password = document.getElementById("Password").value;
-            const confirmPassword = document.getElementById("PasswordConfirm").value;
-
-            if (password !== confirmPassword) {
-                event.preventDefault(); // Formun gönderilmesini durdur
-                const errorMessage = document.getElementById("error-message");
-                errorMessage.style.display = "block"; // Hata mesajını göster
-            }
-        });
-
 </script>

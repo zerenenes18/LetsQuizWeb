@@ -57,7 +57,7 @@ public class LectureManager : ILectureService
         return new SuccessResult();
     }
 
-    [SecuredOperation("student")]
+    
     public async Task<IDataResult<List<Lecture>>> GetAdminLecturesAsync()
     {
         var adminId = Guid.Parse(_httpContextAccessor.HttpContext.User.ClaimIdentifier());

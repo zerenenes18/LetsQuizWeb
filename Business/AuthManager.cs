@@ -99,9 +99,19 @@ public class AuthManager : IAuthService
 
     public async Task<IDataResult<AccessToken>> CreateAccessTokenAsync(User user)
     {
-        var tmpResult = await _userService.GetClaimsAsync(user);
-        var claims = tmpResult.Data;
-        AccessToken accessToken = _tokenHelper.CreateToken(user, claims);
+        AccessToken accessToken = new AccessToken();
+        try
+        {
+            var tmpResult = await _userService.GetClaimsAsync(user);
+            var claims = tmpResult.Data;
+            accessToken  = _tokenHelper.CreateToken(user, claims);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.StackTrace);
+            throw;
+        }
+       
         return new SuccessDataResult<AccessToken>(accessToken, Messages.AccessTokenCreated);
     }
 

@@ -11,6 +11,28 @@
     <link rel="stylesheet" href="~/css/quiz.css" />
     
     <style>
+
+        .quiz-delete {
+            display: flex;
+            align-items: center; /* Dikeyde ortalama */
+            justify-content: center; /* Yatayda ortalama */
+            width: 20px; /* Sabit genişlik */
+            height: 20px; /* Sabit yükseklik */
+            background-color: #f8d7da; /* Hafif kırmızı arka plan */
+            border-radius: 15px; /* Tam yuvarlak */
+            cursor: pointer; /* İmleç değişimi */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .quiz-delete:hover {
+            background-color: #f5c6cb; /* Hover sırasında daha koyu kırmızı */
+            transform: scale(1.1); /* Hover sırasında büyütme efekti */
+        }
+
+        .quiz-delete i {
+            color: #721c24; /* Çöp kutusu simgesi için renk */
+            font-size: 16px; /* Simge boyutu */
+        }
         .quiz-card {
             display: flex;
             border: 1px solid #ddd;
@@ -18,7 +40,9 @@
             border-radius: 5px;
             overflow: hidden;
         }
-
+        .rounded-icon {
+            border-radius: 10px;
+        }
         .quiz-info {
             width: 90%;
             padding: 10px;
@@ -121,9 +145,9 @@
                                 <h6>${quiz.quizName}</h6>
                                 <p>Lecture: ${quiz.lectureName}</p>
                             </div>
-                            <div class="quiz-delete">
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
+                             <div class="quiz-delete">
+            <i class="fas fa-trash-alt"></i> <!-- Çöp kutusu simgesi -->
+        </div>
                         </div>`;
                             $('#quizList').append(quizCard);
                         });
@@ -179,7 +203,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="text-secondary">Question ${index + 1}</h5>
                                 <div>
-                                    <button class="btn btn-warning btn-sm addOptionBtn" data-question-id="${question.questionId}">Add Option</button>
+                                    <button class="btn btn-warning btn-sm addOptionBtn" data-question-id="${question.questionId}">Edit Option</button>
                                     <button class="btn btn-danger btn-sm deleteQuestionBtn" data-question-id="${question.questionId}">Delete</button>
                                 </div>
                             </div>
@@ -189,20 +213,24 @@
                             <p><strong>Score:</strong> ${question.questionScore}</p>
                             <p><strong>Time:</strong> ${question.questionSecondTime} seconds</p>
                             <h6 class="mt-3">Options:</h6>
-                            <ul class="list-group">
-                                ${question.options.map(option => `
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            ${option.optionText}
-                                            ${option.optionImagePath ?
+                           <ul class="list-group">
+    ${question.options.map(option => `
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                ${option.optionText}
+                ${option.optionImagePath ?
                         `<img src="${option.optionImagePath}" alt="Option Image" class="img-thumbnail ms-2" style="max-width: 50px; height: auto;">` : ''}
-                                        </div>
-                                        <button class="btn btn-danger btn-sm deleteOptionBtn" data-option-id="${option.optionId}">
-                                        <i class="fa"></i>
-</button>
-                                    </li>
-                                `).join('')}
-                            </ul>
+            </div>
+            <div class="d-flex align-items-center">
+                ${option.isTrue ?
+                        `<span class="ms-auto text-success"><i class="fa fa-check-circle"></i> Correct</span>` : ''}
+                <button class="btn btn-danger btn-sm deleteOptionBtn ms-2" data-option-id="${option.optionId}">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        </li>
+    `).join('')}
+</ul>
                         </div>
                     `).join('')}
                 </div>
@@ -300,43 +328,56 @@
             Swal.fire({
                 title: 'Add New Question',
                 html: `
-            <form id="addQuestionForm">
-                <div class="form-group">
-                    <label for="questionText">Question Text</label>
-                    <input type="text" id="questionText" class="form-control" placeholder="Enter question text" required>
-                </div>
-                <div class="form-group">
-                    <label for="questionScore">Score</label>
-                    <input type="number" id="questionScore" class="form-control" placeholder="Enter score" required>
-                </div>
-                <div class="form-group">
-                    <label for="questionTime">Time (in seconds)</label>
-                    <input type="number" id="questionTime" class="form-control" placeholder="Enter time in seconds" required>
-                </div>
-                <div class="form-group">
-                    <label for="questionImage">Question Image URL (optional)</label>
-                    <input type="text" id="questionImage" class="form-control" placeholder="Enter image URL">
-                </div>
-            </form>
-        `,
+        <form id="addQuestionForm">
+            <div class="form-group">
+                <label for="questionText">Question Text</label>
+                <input type="text" id="questionText" class="form-control" placeholder="Enter question text" required>
+            </div>
+            <div class="form-group">
+                <label for="questionScore">Score</label>
+                <input type="number" id="questionScore" class="form-control" placeholder="Enter score" required>
+            </div>
+            <div class="form-group">
+                <label for="questionTime">Time (in seconds)</label>
+                <input type="number" id="questionTime" class="form-control" placeholder="Enter time in seconds" required>
+            </div>
+            <div class="form-group">
+                <label for="questionImage">Question Image URL (optional)</label>
+                <input type="text" id="questionImage" class="form-control" placeholder="Enter image URL">
+            </div>
+        </form>
+    `,
                 focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: 'Add',
                 preConfirm: () => {
-                    const questionText = $('#questionText').val();
-                    const questionScore = $('#questionScore').val();
-                    const questionTime = $('#questionTime').val();
+                    let questionText = $('#questionText').val();
+                    questionText = escapeHtml(questionText);
+                    const questionScore = parseInt($('#questionScore').val(), 10);
+                    const questionTime = parseInt($('#questionTime').val(), 10);
                     const questionImage = $('#questionImage').val();
 
-                    if (!questionText || !questionScore || !questionTime) {
+                    // Doğrulama: Boş alanlar veya geçersiz değerler kontrolü
+                    if (!questionText || isNaN(questionScore) || isNaN(questionTime)) {
                         Swal.showValidationMessage('Please fill out all required fields');
+                        return false;
+                    }
+
+                    // Doğrulama: Score 0'dan büyük, Time 5'ten büyük olmalı
+                    if (questionScore <= 0) {
+                        Swal.showValidationMessage('Score must be greater than 0');
+                        return false;
+                    }
+
+                    if (questionTime <= 5) {
+                        Swal.showValidationMessage('Time must be greater than 5 seconds');
                         return false;
                     }
 
                     return {
                         QuestionText: questionText,
-                        QuestionScore: parseInt(questionScore, 10),
-                        QuestionSecondTime: parseInt(questionTime, 10),
+                        QuestionScore: questionScore,
+                        QuestionSecondTime: questionTime,
                         QuestionImagePath: questionImage || null
                     };
                 }
@@ -367,96 +408,147 @@
                 }
             });
         }
+        
+        
+        
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
 
         function addNewOption(questionId, quizName) {
-            Swal.fire({
-                title: 'Add Options',
-                html: `
-            <form id="addOptionForm">
+            // Seçili sorunun mevcut bilgilerini almak için AJAX çağrısı
+            $.ajax({
+                url: '/Quiz/GetQuestionDetails',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                data: { questionId: questionId },
+                success: function (question) {
+                    // Mevcut seçenekler formda doldurulacak
+                    Swal.fire({
+                        title: 'Edit Options',
+                        html: `
+            <form id="editOptionForm">
                 <div id="optionsContainer">
+                    ${question.options.map(option => `
+                        <div class="form-group">
+                            <label for="optionText">Option Text</label>
+                            <input type="text" class="form-control optionText" value="${option.optionText}" required>
+                           
+                            <div class="form-check mt-2">
+                                <input type="checkbox" class="form-check-input optionIsTrue" id="isTrueCheck-${option.optionId}" ${option.isTrue ? 'checked' : ''}>
+                                <label class="form-check-label" for="isTrueCheck-${option.optionId}">Is True</label>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <button type="button" id="addNewOption" class="btn btn-sm btn-primary mt-2" ${question.options.length >= 5 ? 'disabled' : ''}>Add New Option</button>
+            </form>
+        `,
+                        focusConfirm: false,
+                        showCancelButton: true,
+                        confirmButtonText: 'Save',
+                        preConfirm: () => {
+                            const options = [];
+                            let isTrueCount = 0;
+
+                            $('#optionsContainer .form-group').each(function () {
+                                const optionText = $(this).find('.optionText').val();
+                                const escapedOptionText = escapeHtml(optionText); // HTML'yi escape et
+                                const optionImage = $(this).find('.optionImage').val();
+                                const isTrue = $(this).find('.optionIsTrue').is(':checked');
+
+                                if (optionText) {
+                                    options.push({
+                                        OptionText: escapedOptionText, // Escape edilmiş metni kullan
+                                        OptionImagePath: optionImage || null,
+                                        IsTrue: isTrue
+                                    });
+                                    if (isTrue) isTrueCount++;
+                                }
+                            });
+
+                            // Doğrulama: En az bir tane ve en fazla bir tane IsTrue olmalı
+                            if (isTrueCount === 0) {
+                                Swal.showValidationMessage('At least one option must be marked as correct (Is True).');
+                                return false;
+                            }
+                            if (isTrueCount > 1) {
+                                Swal.showValidationMessage('Only one option can be marked as correct (Is True).');
+                                return false;
+                            }
+
+                            if (options.length === 0) {
+                                Swal.showValidationMessage('Please add at least one option.');
+                                return false;
+                            }
+
+                            return options;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const options = result.value;
+
+                            $.ajax({
+                                url: '/Quiz/UpdateOptions',
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                                },
+                                contentType: 'application/json',
+                                data: JSON.stringify({
+                                    QuestionId: questionId,
+                                    Options: options
+                                }),
+                                success: function () {
+                                    Swal.fire('Success', 'Options updated successfully!', 'success').then(() => {
+                                        loadQuizContent(quizName);
+                                    });
+                                },
+                                error: function () {
+                                    Swal.fire('Error', 'Failed to update options!', 'error');
+                                }
+                            });
+                        }
+                    });
+
+                    // Dinamik olarak yeni bir seçenek ekleme
+                    $('#addNewOption').click(function () {
+                        const currentOptionsCount = $('#optionsContainer .form-group').length;
+
+                        if (currentOptionsCount < 5) {
+                            $('#optionsContainer').append(`
                     <div class="form-group">
                         <label for="optionText">Option Text</label>
                         <input type="text" class="form-control optionText" placeholder="Enter option text" required>
-                        <label for="optionImage">Option Image URL (optional)</label>
-                        <input type="text" class="form-control optionImage" placeholder="Enter option image URL">
+                       
                         <div class="form-check mt-2">
-                            <input type="checkbox" class="form-check-input optionIsTrue" id="isTrueCheck">
-                            <label class="form-check-label" for="isTrueCheck">Is True</label>
+                            <input type="checkbox" class="form-check-input optionIsTrue">
+                            <label class="form-check-label">Is True</label>
                         </div>
                     </div>
-                </div>
-                <button type="button" id="addNewOption" class="btn btn-sm btn-primary mt-2">Add New Option</button>
-            </form>
-        `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'Add',
-                preConfirm: () => {
-                    const options = [];
-                    $('#optionsContainer .form-group').each(function () {
-                        const optionText = $(this).find('.optionText').val();
-                        const optionImage = $(this).find('.optionImage').val();
-                        const isTrue = $(this).find('.optionIsTrue').is(':checked'); // Checkbox kontrolü
-                        if (optionText) {
-                            options.push({
-                                OptionText: optionText,
-                                OptionImagePath: optionImage || null,
-                                IsTrue: isTrue // Checkbox değeri
-                            });
+                `);
+                        }
+
+                        // Eğer 5'ten fazla seçenek varsa butonu devre dışı bırak
+                        if (currentOptionsCount + 1 >= 5) {
+                            $(this).prop('disabled', true);
                         }
                     });
-
-                    if (options.length === 0) {
-                        Swal.showValidationMessage('Please add at least one option');
-                        return false;
-                    }
-
-                    return options;
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load question details!', 'error');
                 }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const options = result.value;
-
-                    $.ajax({
-                        url: '/Quiz/AddOptions',
-                        method: 'POST',
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-                        },
-                        contentType: 'application/json',
-                        data: JSON.stringify({
-                            QuestionId: questionId,
-                            Options: options
-                        }),
-                        success: function () {
-                            Swal.fire('Success', 'Options added successfully!', 'success').then(() => {
-                                loadQuizContent(quizName);
-                            });
-                        },
-                        error: function () {
-                            Swal.fire('Error', 'Failed to add options!', 'error');
-                        }
-                    });
-                }
-            });
-
-            // Add new option dynamically
-            $('#addNewOption').click(function () {
-                $('#optionsContainer').append(`
-            <div class="form-group">
-                <label for="optionText">Option Text</label>
-                <input type="text" class="form-control optionText" placeholder="Enter option text" required>
-                <label for="optionImage">Option Image URL (optional)</label>
-                <input type="text" class="form-control optionImage" placeholder="Enter option image URL">
-                <div class="form-check mt-2">
-                    <input type="checkbox" class="form-check-input optionIsTrue">
-                    <label class="form-check-label">Is True</label>
-                </div>
-            </div>
-        `);
             });
         }
-
         // Quiz bilgisine tıklandığında quiz içeriğini yükler
         $(document).on('click', '.quiz-info', function () {
             const quizName = $(this).closest('.quiz-card').data('quiz-name');

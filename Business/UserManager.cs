@@ -20,7 +20,7 @@ public class UserManager : IUserService
         
     }
     
-    [SecuredOperation("admin,student")]
+   
     public async Task<IDataResult<List<User>>> GetAllAsync()
     {
         try

@@ -18,7 +18,7 @@ namespace Core.EntityFramework
         public async Task AddAsync(TEntity entity)
         {
             _context.Entry(entity).State = EntityState.Added;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); 
             
         }
 

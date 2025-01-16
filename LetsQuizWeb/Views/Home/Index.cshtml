@@ -4,12 +4,23 @@
     ViewData["Title"] = "Home";
 }
 
+@{
+    Model.Scores = Model.Scores
+        .OrderBy(score => score.QuizLecture)
+        .ThenByDescending(score => score.Points)
+        .ToList();
+}
 <link rel="stylesheet" href="~/css/home.css" />
 <style>
     .my-score-card{
         margin-top: 40px !important;
     }
-   
+    .sortable {
+        cursor: pointer;
+    }
+    .sortable:hover {
+        text-decoration: underline;
+    }
     .score-card .card-body {
         max-height: 450px;
         overflow-y: auto;
@@ -33,26 +44,25 @@
                     <h5>Score Table</h5>
                 </div>
                 <div class="card-body">
-                    <table class="table table-hover text-center">
+                    <table class="table table-hover text-center" id="scoreTable">
                         <thead class="table-light">
                         <tr>
-                            <th>UserName</th>
-                          
-                            <th>QuizName</th>
-                            <th>QuizLecture</th>
-                            <th>Success Rate</th>
-                            <th>Points</th>
-                        </tr></thead>
-                        <tbody>
-                        @foreach (var score in Model.Scores)
+                            <th id="sortByUsername" class="sortable">User</th>
+                            <th id="sortByQuizName" class="sortable">Quiz</th>
+                            <th id="sortByLectureName" class="sortable">Lecture</th>
+                            <th id="sortBySuccessRate" class="sortable">Success Rate</th>
+                            <th id="sortByPoints" class="sortable">Points</th>
+                        </tr>
+                        </thead>
+                        <tbody id="scoreTableBody">
+                        @foreach (var score in Model.Scores.OrderBy(s => s.QuizName).ThenByDescending(s => s.Points))
                         {
                             <tr>
                                 <td>@score.UserName</td>
-                               
                                 <td>@score.QuizName</td>
                                 <td>@score.QuizLecture</td>
-                                <td>@score.SuccessRate%</td>
-                                <td>@score.Points</td>
+                                <td>@score.SuccessRate.ToString("F2")%</td> <!-- Virgülden sonra 2 basamak -->
+                                <td>@score.Points.ToString("F2")</td> <!-- Virgülden sonra 2 basamak -->
                             </tr>
                         }
                         </tbody>
@@ -74,6 +84,42 @@
 
 <script>
     $(document).ready(function () {
+
+        const tableBody = $('#scoreTableBody');
+        const rows = tableBody.find('tr').toArray();
+
+        // Sıralama fonksiyonu
+        function sortTable(columnIndex, isNumeric = false, isDescending = false) {
+            rows.sort((a, b) => {
+                const aValue = $(a).children('td').eq(columnIndex).text().trim();
+                const bValue = $(b).children('td').eq(columnIndex).text().trim();
+
+                let comparison;
+                if (isNumeric) {
+                    comparison = parseFloat(aValue) - parseFloat(bValue);
+                } else {
+                    comparison = aValue.localeCompare(bValue);
+                }
+
+                return isDescending ? -comparison : comparison;
+            });
+
+            tableBody.empty().append(rows);
+        }
+
+        // Başlıkların tıklanabilirliği
+        $('#sortByUsername').on('click', () => sortTable(0));
+        $('#sortByQuizName').on('click', () => sortTable(1));
+        $('#sortByLectureName').on('click', () => sortTable(2));
+        $('#sortBySuccessRate').on('click', () => sortTable(3, true,true));
+        $('#sortByPoints').on('click', () => sortTable(4, true, true));
+
+        // Sayfa yüklendiğinde varsayılan sıralama
+        sortTable(1); // QuizName'e göre sırala
+        sortTable(4, true, true); // Aynı QuizName'de Points'e göre sırala
+ 
+        
+        
         // Dersler ve Quizleri yükleme
         function loadLessonsAndQuizzes() {
             const lessonsContainer = $('#lessonsContainer');
@@ -106,32 +152,34 @@
 
                     // Her bir ders için card oluştur
                     lectures.forEach(lecture => {
+                        // Belirli bir derse ait quizleri filtrele
                         const lessonQuizzes = quizzes.filter(q => q.lectureName === lecture);
 
+                        // Eğer dersin quizleri yoksa o dersi atla
+                        if (lessonQuizzes.length === 0) return;
+
                         const lessonCard = `
-                        <div class="col-md-4 mb-4">
-                            <div class="card shadow-lg lesson-card">
-                                <div class="card-header lesson-card-header">
-                                    <h5 class="card-title text-center">${lecture}</h5>
-                                </div>
-                                <div class="card-body lesson-card-body">
-                                    <ul class="list-group">
-                                        ${
-                            lessonQuizzes.length > 0
-                                ? lessonQuizzes.map(quiz => `
-                                                    <li class="list-group-item quiz-item">
-                                                        <a href="/Quiz/QuizDetail?quizId=${quiz.quizId}" class="quiz-link">
-                                                            ${quiz.quizName}
-                                                        </a>
-                                                    </li>
-                                                `).join('')
-                                : '<li class="list-group-item text-muted">No quizzes available</li>'
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-lg lesson-card">
+            <div class="card-header lesson-card-header">
+                <h5 class="card-title text-center">${lecture}</h5>
+            </div>
+            <div class="card-body lesson-card-body">
+                <ul class="list-group">
+                    ${
+                            lessonQuizzes.map(quiz => `
+                        <li class="list-group-item quiz-item">
+                            <a href="/Quiz/QuizDetail?quizId=${quiz.quizId}" class="quiz-link">
+                                ${quiz.quizName}
+                            </a>
+                        </li>
+                    `).join('')
                         }
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                </ul>
+            </div>
+        </div>
+    </div>
+    `;
                         lessonsContainer.append(lessonCard);
                     });
                 },

@@ -9,7 +9,31 @@
     <link rel="stylesheet" href="~/LetsQuizWeb.styles.css" asp-append-version="true"/>
     <style>
 
-            /* Şeffaf Navbar */
+        .my-button2 {
+            margin-right: 35px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc); /* Renk geçişi */
+            color: white; /* Yazı rengi */
+            font-weight: bold;
+            border: none; /* Çerçeve kaldırılır */
+            border-radius: 25px; /* Yuvarlatılmış köşeler */
+            padding: 10px 20px; /* İç boşluk */
+            cursor: pointer; /* İşaretçi değişir */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Hafif gölge */
+            transition: all 0.3s ease; /* Geçiş animasyonu */
+        }
+
+        .my-button2:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb); /* Hover sırasında renk tersine döner */
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); /* Hover sırasında daha belirgin gölge */
+            transform: scale(1.05); /* Hover sırasında büyütme efekti */
+        }
+
+        .my-button2:active {
+            transform: scale(0.95); /* Tıklama sırasında küçültme efekti */
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Tıklama sırasında gölge azalır */
+        }
+
+        /* Şeffaf Navbar */
         .navbar {
             background: rgba(255, 255, 255, 0.85); /* Hafif şeffaf beyaz */
             z-index: 10; /* Üstte görünmesi için */
@@ -17,7 +41,8 @@
             position: fixed; /* Sabit pozisyon */
             top: 0; /* Ekranın üstüne sabitler */
             left: 0;
-            margin-top: 10px; !important;
+            margin-top: 10px;
+        !important;
             width: 100%; /* Tüm genişliği kapsar */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
         }
@@ -64,22 +89,26 @@
         button {
             border-radius: 10px !important;
         }
-        
+
         .my-button-login, .my-button-logout {
-            margin-left: 20px; !important;
-            
+            margin-left: 20px;
+        !important;
+
         }
-        
-        .my-button-logout{
+
+        .my-button-logout {
             background: linear-gradient(45deg, #ff7f50, #ffa07a);
         }
-        .my-button-login{
+
+        .my-button-login {
             background-color: #4caf50;
         }
-        .my-button{
+
+        .my-button {
             margin-right: 15px;
             background: linear-gradient(45deg, #6c63ff, #57c1eb);
         }
+
         /* Hover durumunda renk beyaz olsun */
         .my-button:hover, .my-button-login:hover, .my-button-logout:hover {
             color: white !important;
@@ -93,7 +122,8 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LetsQuizWeb</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -102,23 +132,31 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
+
+                </ul>
+                <ul class="navbar-nav">
+                    <!-- Login/Logout Button -->
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <button id="Btn" class="nav-link text-dark my-button" onclick="goToSource()">GitHub</button>
                     </li>
                 </ul>
-           
+
                 <ul class="navbar-nav">
                     <!-- Login/Logout Button -->
                     <li class="nav-item">
                         <button id="Btn" class="nav-link text-dark my-button" onclick="goToQuiz()">My Quizzes</button>
                     </li>
                 </ul>
-              
+
                 <ul class="navbar-nav">
                     <!-- Login/Logout Button -->
                     <li class="nav-item">
-                        <button id="loginBtn" class="nav-link  text-dark  my-button-login" onclick="handleLogin()">Log in</button>
-                        <button id="logoutBtn" class="nav-link my-button-logout text-dark" onclick="handleLogout()" style="display: none;">Log out</button>
+                        <button id="loginBtn" class="nav-link  text-dark  my-button-login" onclick="handleLogin()">Log
+                            in
+                        </button>
+                        <button id="logoutBtn" class="nav-link my-button-logout text-dark" onclick="handleLogout()"
+                                style="display: none;">Log out
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -131,11 +169,11 @@
         Your browser does not support the video tag.
     </video>
     <div id="renderBody" style="display: none;">
-        <main  role="main" class="pb-3">
+        <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-   
+
 </div>
 
 <footer class="border-top footer text-muted">
@@ -145,6 +183,9 @@
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+
+    // Uygulama yüklendiğinde veya belirli bir olayda kontrol edin
     // Beyaz liste URL'leri
     const whiteListedPaths = [
         "/Login/Index",
@@ -154,12 +195,13 @@
 
     // Kullanıcının bulunduğu yol
     const currentPath = window.location.pathname;
+
     if (whiteListedPaths.includes(currentPath)) {
         document.querySelector("#renderBody").style.display = "block";
     }
     document.addEventListener("DOMContentLoaded", () => {
         const authToken = localStorage.getItem("authToken");
-
+        clearExpiredToken();
         // Eğer mevcut yol beyaz listedeyse kontrol yapma
         if (whiteListedPaths.includes(currentPath)) {
             return;
@@ -207,6 +249,29 @@
         }
     });
 
+    function isTokenExpired(token) {
+        if (!token) return true; // Token yoksa, süresi dolmuş kabul edilir.
+
+        const payloadBase64 = token.split('.')[1]; // JWT'nin payload kısmı
+        const payload = JSON.parse(atob(payloadBase64)); // Base64 çözülerek JSON olarak okunur
+        const expiration = payload.exp; // `exp` alanı okunur
+
+        const now = Math.floor(Date.now() / 1000); // Şu anki zaman (saniye cinsinden)
+        return now > expiration; // Şu anki zaman expiration'dan büyükse token süresi dolmuş demektir
+    }
+
+    function clearExpiredToken() {
+        const token = localStorage.getItem('authToken'); // Token'i al
+        if (isTokenExpired(token)) {
+            localStorage.removeItem('authToken'); // Token'i sil
+            if (whiteListedPaths.includes(currentPath)) {
+                return;
+            }
+            window.location.href = '/Login/Index';
+        }
+    }
+
+
     // Navbar'daki butonları kontrol et
     document.addEventListener("DOMContentLoaded", () => {
         const loginBtn = document.getElementById("loginBtn");
@@ -244,6 +309,11 @@
     function goToQuiz() {
         window.location.href = "/Quiz/Index"; // Quiz/Index sayfasına yönlendir
     }
+
+    function goToSource() {
+        window.location.href = "https://github.com/zerenenes18/LetsQuizWeb"; // GitHub linkine yönlendir
+    }
+
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

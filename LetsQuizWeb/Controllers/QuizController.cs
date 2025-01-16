@@ -37,7 +37,7 @@ public class QuizController : Controller
         return View();
     }
     
-    [SecuredOperation("student,admin")]
+   
     public async Task<IActionResult> AddLecture(string name)
     {
         Lecture lecture = new Lecture
@@ -67,6 +67,42 @@ public class QuizController : Controller
         {
             return BadRequest(result.Message);
         }
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetQuestionDetails(Guid questionId)
+    {
+        // Veritabanından soruyu bul
+        var questionResult = await _questionService.GetByIdAsync(questionId);
+        var question = questionResult.Data;
+        var options = await _optionDal.GetAllAsync(o=> o.QuestionId == question.Id);
+        
+        // Eğer soru bulunamazsa 404 (Not Found) döndür
+        if (question == null)
+        {
+            return NotFound(new { message = "Question not found" });
+        }
+        
+
+        // Sorunun detaylarını JSON formatında döndür
+        // Sorunun detaylarını JSON formatında döndür
+        var questionDetails = new
+        {
+            QuestionId = question.Id,
+            QuestionText = question.Description,
+            QuestionImagePath = question.ImagePath,
+            QuestionScore = question.QuestionScore,
+            QuestionSecondTime = question.QuestionSecondTime,
+            Options = options.Select(option => new
+            {
+                OptionId = option.Id,
+                OptionText = option.Description, // Option'daki Description kullanılıyor
+                OptionImagePath = option.ImagePath, // Option'daki ImagePath
+                IsTrue = option.IsTrue // Option'daki IsTrue bilgisi
+            }).ToList()
+        };
+
+        return Ok(questionDetails);
     }
 
     public async Task<IActionResult> GetQuizContent(string quizName)
@@ -183,7 +219,61 @@ public class QuizController : Controller
 
             return Ok("Options added successfully.");
         }
-    
+    public async Task<IActionResult> UpdateOptions([FromBody] UpdateOptionsRequest request)
+    {
+        if (request == null || string.IsNullOrEmpty(request.QuestionId.ToString()) || request.Options == null || !request.Options.Any())
+        {
+            return BadRequest("Invalid request data.");
+        }
+
+        var questionResult = await _questionService.GetByIdAsync(request.QuestionId);
+        if (!questionResult.Success || questionResult.Data == null)
+        {
+            return NotFound($"Question with ID '{request.QuestionId}' not found.");
+        }
+
+        // Mevcut seçenekleri alın
+        var existingOptions = await _optionDal.GetAllAsync(o => o.QuestionId == request.QuestionId);
+
+        // Güncellenmesi gereken seçenekleri işle
+        foreach (var option in request.Options)
+        {
+            var existingOption = existingOptions.FirstOrDefault(o => o.Id == option.OptionId);
+
+            if (existingOption != null)
+            {
+                // Mevcut bir seçeneği güncelle
+                existingOption.Description = option.OptionText;
+                existingOption.IsTrue = option.IsTrue;
+                existingOption.ImagePath = option.OptionImagePath;
+
+                await _optionDal.UpdateAsync(existingOption);
+            }
+            else
+            {
+                // Yeni bir seçenek ekle
+                var newOption = new Option
+                {
+                    QuestionId = request.QuestionId,
+                    Description = option.OptionText,
+                    IsTrue = option.IsTrue,
+                    ImagePath = option.OptionImagePath
+                };
+                await _optionDal.AddAsync(newOption);
+            }
+        }
+
+        // Silinmesi gereken seçenekleri işle
+        var optionIdsToKeep = request.Options.Select(o => o.OptionId).ToHashSet();
+        var optionsToDelete = existingOptions.Where(o => !optionIdsToKeep.Contains(o.Id)).ToList();
+
+        foreach (var optionToDelete in optionsToDelete)
+        {
+            await _optionDal.DeleteAsync(optionToDelete);
+        }
+
+        return Ok("Options updated successfully.");
+    }
     
     [HttpDelete]
     public async Task<IActionResult> DeleteQuestion([FromBody] DeleteQuestionModel model)
@@ -207,7 +297,12 @@ public class QuizController : Controller
     [HttpDelete]
     public async Task<IActionResult> DeleteOption([FromBody] DeleteOptionModel model)
     {
+        
         var deletedQuestion = await _optionDal.GetAsync(o=>o.Id ==   model.OptionId);
+        if (deletedQuestion.IsTrue)
+        {
+            return BadRequest("You cannot delete this option.");
+        }
         await _optionDal.DeleteAsync(deletedQuestion);
        
         return Ok("Question deleted successfully.");
@@ -379,6 +474,14 @@ public class QuizController : Controller
         var adminId = Guid.Parse(_httpContextAccessor.HttpContext.User.ClaimIdentifier());
         // Quiz ID'yi tüm sonuçlardan al
         var quizId = results.First().QuizId;
+        
+        var scores = await _scoreDal.GetAllAsync(s => s.UserId == adminId);
+        var isExistScore = scores.Where(s=> s.QuizId == quizId).ToList();
+        if (isExistScore.Count > 0)
+        {
+            return BadRequest("Quiz already exists.");
+        }
+        
         var quiz = await _quizService.GetByIdAsync(quizId);
         if (quiz == null || quiz.Data == null)
         {
@@ -391,12 +494,12 @@ public class QuizController : Controller
         NewScore.QuizId = quiz.Data.Id;
         NewScore.QuizName = quiz.Data.Name;
         NewScore.CreatedAt = DateTime.Now;
+        NewScore.LectureName = quiz.Data.Name;
         double scoreValueTmp = 0;
         decimal successValueTmp = 0;
-        int isTrueCount = 0;
+        decimal isTrueCount = 0;
         foreach (var result in results)
         {
-            
             if (result.IsTrue)
             {
                 isTrueCount++;
@@ -404,11 +507,10 @@ public class QuizController : Controller
             scoreValueTmp += result.Score;
         }
         NewScore.ScoreValue = scoreValueTmp;
-        successValueTmp = (isTrueCount / results.Count) * 100; 
+        successValueTmp = (isTrueCount  /  results.Count) * 100; 
         NewScore.SuccessRate = successValueTmp;
         
         await _scoreDal.AddAsync(NewScore);
-        
         
         return Ok(new
         {

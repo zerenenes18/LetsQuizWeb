@@ -67,5 +67,18 @@ public class QuickStartModel
     public int ExamDuration { get; set; }
     public int QuestionCount { get; set; }
     
+}
 
+public class UpdateOptionsRequest
+{
+    public Guid QuestionId { get; set; }
+    public List<UpdateOptionDto> Options { get; set; }
+}
+
+public class UpdateOptionDto
+{
+    public Guid OptionId { get; set; } // Mevcut seçenek için ID, yeni seçenek için boş bırakılabilir
+    public string OptionText { get; set; }
+    public string? OptionImagePath { get; set; }
+    public bool IsTrue { get; set; }
 }

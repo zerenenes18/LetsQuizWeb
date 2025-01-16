@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Module = Autofac.Module;
 using Castle.DynamicProxy;
+using Core.DataAccess;
+using Core.EntityFramework;
+
 namespace Business.DependencyResolvers.Autofac;
 
 public class AutofacBusinessModule : Module
@@ -59,12 +62,35 @@ public class AutofacBusinessModule : Module
                 var configuration = ctx.Resolve<IConfiguration>();
                 var optionsBuilder = new DbContextOptionsBuilder<LetsQuizDbContext>();
                 optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-
+    
                 return new LetsQuizDbContext(optionsBuilder.Options);
             })
-            .AsSelf()
-            .As<DbContext>()
-            .InstancePerDependency(); // Her çözümlemede yeni bir örnek oluşturur
+            .AsSelf() // Kendi türü olarak kaydedilir.
+            .As<DbContext>() // DbContext türü olarak kaydedilir.
+            .InstancePerLifetimeScope(); // Her yaşam döngüsünde bir örnek oluşturulur.
+        
+        
+        
+        builder.Register(ctx =>
+            {
+                // IConfiguration'den connection string al
+                var configuration = ctx.Resolve<IConfiguration>();
+
+                // DbContextOptions oluştur
+                var optionsBuilder = new DbContextOptionsBuilder<LetsQuizDbContext>();
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+
+                // DbContextOptions'ı döndür
+                return optionsBuilder.Options;
+            })
+            .As<DbContextOptions<LetsQuizDbContext>>() // DbContextOptions olarak kaydet
+            .SingleInstance(); // Her yerde aynı nesne kullanılır
+        
+        builder.RegisterGeneric(typeof(EfEntityRepositoryBaseDDP<,>))
+            .As(typeof(IEntityRepository<>)) // IEntityRepository<> ile eşleştir
+            .InstancePerDependency(); // Her çözümlemede yeni bir nesne oluştur
+
+
 
         
         

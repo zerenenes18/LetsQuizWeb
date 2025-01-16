@@ -27,7 +27,7 @@
 
         // "Send Code" butonu için event listener
         sendCodeBtn.addEventListener("click", async () => {
-            const authToken = localStorage.getItem("authToken");
+            const authToken = localStorage.getItem("registered");
 
             if (!authToken) {
                 alert("Authentication token not found!");

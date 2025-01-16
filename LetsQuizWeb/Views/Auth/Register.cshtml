@@ -109,7 +109,7 @@
                 data: JSON.stringify(formData),
                 success: function (response) {
                     if (response.success) {
-                        localStorage.setItem('isregisterd', response.data.token);
+                        localStorage.setItem('registered', response.data.token);
                         window.location.href = '/Auth/Verification';
                     } else {
                         alert('Registration failed: ' + response.message);

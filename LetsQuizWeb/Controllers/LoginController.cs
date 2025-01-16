@@ -24,4 +24,15 @@ public class LoginController : Controller
         ViewBag.ErrorMessage = "Kullanıcı adı veya şifre yanlış!";
         return View();
     }
+    
+    
+    
+    public ActionResult ForgotPassword()
+    {
+        return View();
+    }
+
+
+    
+    
 }

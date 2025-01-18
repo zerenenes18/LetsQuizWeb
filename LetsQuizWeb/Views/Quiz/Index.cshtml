@@ -14,24 +14,24 @@
 
         .quiz-delete {
             display: flex;
-            align-items: center; /* Dikeyde ortalama */
-            justify-content: center; /* Yatayda ortalama */
-            width: 20px; /* Sabit genişlik */
-            height: 20px; /* Sabit yükseklik */
-            background-color: #f8d7da; /* Hafif kırmızı arka plan */
-            border-radius: 15px; /* Tam yuvarlak */
-            cursor: pointer; /* İmleç değişimi */
+            align-items: center; 
+            justify-content: center; 
+            width: 20px; 
+            height: 20px; 
+            background-color: #f8d7da; 
+            border-radius: 15px; 
+            cursor: pointer; 
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .quiz-delete:hover {
-            background-color: #f5c6cb; /* Hover sırasında daha koyu kırmızı */
-            transform: scale(1.1); /* Hover sırasında büyütme efekti */
+            background-color: #f5c6cb;
+            transform: scale(1.1); 
         }
 
         .quiz-delete i {
-            color: #721c24; /* Çöp kutusu simgesi için renk */
-            font-size: 16px; /* Simge boyutu */
+            color: #721c24; 
+            font-size: 16px; 
         }
         .quiz-card {
             display: flex;
@@ -81,7 +81,7 @@
                 <h5 class="text-center">Existing Quizzes</h5>
                 <div id="quizList">
                     
-                    <!-- Dinamik olarak quizler buraya eklenecek -->
+                 
                 </div>
             </div>
         </div>
@@ -94,7 +94,7 @@
                     <div class="form-group">
                         <label for="lecture">Select Lecture</label>
                         <select id="lecture" class="form-control">
-                            <!-- Dinamik olarak dersler buraya eklenecek -->
+                          
                         </select>
                         <a href="#" id="addNewLecture" class="d-block mt-2 text-primary">New</a>
                     </div>
@@ -129,7 +129,7 @@
                     'Authorization': 'Bearer ' + localStorage.getItem('authToken')
                 },
                 success: function (data) {
-                    // Quizleri temizle ve doldur
+                   
                     $('#quizList').empty();
                     if (!data.adminQuizzesModel || data.adminQuizzesModel.length === 0) {
                         const noQuizMessage = `
@@ -146,14 +146,14 @@
                                 <p>Lecture: ${quiz.lectureName}</p>
                             </div>
                              <div class="quiz-delete">
-            <i class="fas fa-trash-alt"></i> <!-- Çöp kutusu simgesi -->
+            <i class="fas fa-trash-alt"></i> 
         </div>
                         </div>`;
                             $('#quizList').append(quizCard);
                         });
                     }
 
-                    // Ders listesini temizle ve doldur
+                 
                     $('#lecture').empty();
                     if (!data.lectureList || data.lectureList.length === 0) {
                         const noLectureOption = `
@@ -186,9 +186,9 @@
                 data: { quizName: quizName },
                 success: function (data) {
                     const rightPanel = $('.right-panel');
-                    rightPanel.empty(); // Sağ paneli temizle
+                    rightPanel.empty(); 
 
-                    // Quiz içeriğini oluştur
+                    
                     const quizContent = `
             <div class="card shadow-lg p-4 mb-4 bg-white rounded">
                 <div class="d-flex justify-content-between align-items-center">
@@ -324,66 +324,52 @@
                 }
             });
         }
-        function addNewQuestion(quizName) {
+
+
+        function addNewQuestion(quizName, quizId) {
             Swal.fire({
                 title: 'Add New Question',
                 html: `
-        <form id="addQuestionForm">
-            <div class="form-group">
-                <label for="questionText">Question Text</label>
-                <input type="text" id="questionText" class="form-control" placeholder="Enter question text" required>
-            </div>
-            <div class="form-group">
-                <label for="questionScore">Score</label>
-                <input type="number" id="questionScore" class="form-control" placeholder="Enter score" required>
-            </div>
-            <div class="form-group">
-                <label for="questionTime">Time (in seconds)</label>
-                <input type="number" id="questionTime" class="form-control" placeholder="Enter time in seconds" required>
-            </div>
-            <div class="form-group">
-                <label for="questionImage">Question Image URL (optional)</label>
-                <input type="text" id="questionImage" class="form-control" placeholder="Enter image URL">
-            </div>
-        </form>
-    `,
+            <form id="addQuestionForm">
+                <div class="form-group">
+                    <label for="questionText">Question Text</label>
+                    <input type="text" id="questionText" class="form-control" placeholder="Enter question text" required>
+                </div>
+                <div class="form-group">
+                    <label for="questionScore">Score</label>
+                    <input type="number" id="questionScore" class="form-control" placeholder="Enter score" required>
+                </div>
+                <div class="form-group">
+                    <label for="questionTime">Time (in seconds)</label>
+                    <input type="number" id="questionTime" class="form-control" placeholder="Enter time in seconds" required>
+                </div>
+                <div class="form-group">
+                    <label for="questionImage">Question Image (optional)</label>
+                    <input type="file" id="questionImage" class="form-control" accept="image/*">
+                </div>
+            </form>
+        `,
                 focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: 'Add',
                 preConfirm: () => {
-                    let questionText = $('#questionText').val();
-                    questionText = escapeHtml(questionText);
-                    const questionScore = parseInt($('#questionScore').val(), 10);
-                    const questionTime = parseInt($('#questionTime').val(), 10);
-                    const questionImage = $('#questionImage').val();
+                    const formData = new FormData();
+                    formData.append('QuizName', quizName);
+                    formData.append('QuizId', quizId);
+                    formData.append('Question.QuestionText', $('#questionText').val());
+                    formData.append('Question.QuestionScore', $('#questionScore').val());
+                    formData.append('Question.QuestionSecondTime', $('#questionTime').val());
 
-                    // Doğrulama: Boş alanlar veya geçersiz değerler kontrolü
-                    if (!questionText || isNaN(questionScore) || isNaN(questionTime)) {
-                        Swal.showValidationMessage('Please fill out all required fields');
-                        return false;
+                    const questionImage = $('#questionImage')[0].files[0];
+                    if (questionImage) {
+                        formData.append('QuestionImage', questionImage);
                     }
 
-                    // Doğrulama: Score 0'dan büyük, Time 5'ten büyük olmalı
-                    if (questionScore <= 0) {
-                        Swal.showValidationMessage('Score must be greater than 0');
-                        return false;
-                    }
-
-                    if (questionTime <= 5) {
-                        Swal.showValidationMessage('Time must be greater than 5 seconds');
-                        return false;
-                    }
-
-                    return {
-                        QuestionText: questionText,
-                        QuestionScore: questionScore,
-                        QuestionSecondTime: questionTime,
-                        QuestionImagePath: questionImage || null
-                    };
+                    return formData;
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const newQuestion = result.value;
+                    const formData = result.value;
 
                     $.ajax({
                         url: '/Quiz/AddQuestion',
@@ -391,15 +377,11 @@
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('authToken')
                         },
-                        contentType: 'application/json',
-                        data: JSON.stringify({
-                            QuizName: quizName,
-                            Question: newQuestion
-                        }),
+                        processData: false,
+                        contentType: false,
+                        data: formData,
                         success: function () {
-                            Swal.fire('Success', 'Question added successfully!', 'success').then(() => {
-                                loadQuizContent(quizName);
-                            });
+                            Swal.fire('Success', 'Question added successfully!', 'success');
                         },
                         error: function () {
                             Swal.fire('Error', 'Failed to add question!', 'error');
@@ -549,13 +531,12 @@
                 }
             });
         }
-        // Quiz bilgisine tıklandığında quiz içeriğini yükler
+       
         $(document).on('click', '.quiz-info', function () {
             const quizName = $(this).closest('.quiz-card').data('quiz-name');
             loadQuizContent(quizName);
         });
 
-// Silme bölgesine tıklandığında quiz silme işlemini yapar
         $(document).on('click', '.quiz-delete', function () {
             const quizId = $(this).closest('.quiz-card').data('quiz-id');
             const quizName = $(this).closest('.quiz-card').data('quiz-name');
@@ -589,7 +570,7 @@
                 }
             });
         });
-// Tıklama olayını dinlemek için
+
        
 
         $('#addQuizForm').submit(function (e) {
@@ -627,7 +608,7 @@
             });
         });
         
-        // Yeni Lecture ekleme popup'ı
+        
         $('#addNewLecture').click(function (e) {
             e.preventDefault();
             Swal.fire({

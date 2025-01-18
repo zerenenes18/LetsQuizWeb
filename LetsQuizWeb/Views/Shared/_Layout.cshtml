@@ -11,69 +11,68 @@
 
         .my-button2 {
             margin-right: 35px;
-            background: linear-gradient(135deg, #6a11cb, #2575fc); /* Renk geçişi */
-            color: white; /* Yazı rengi */
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white; 
             font-weight: bold;
-            border: none; /* Çerçeve kaldırılır */
-            border-radius: 25px; /* Yuvarlatılmış köşeler */
-            padding: 10px 20px; /* İç boşluk */
-            cursor: pointer; /* İşaretçi değişir */
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Hafif gölge */
-            transition: all 0.3s ease; /* Geçiş animasyonu */
+            border: none; 
+            border-radius: 25px; 
+            padding: 10px 20px; 
+            cursor: pointer; 
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease; 
         }
 
         .my-button2:hover {
-            background: linear-gradient(135deg, #2575fc, #6a11cb); /* Hover sırasında renk tersine döner */
-            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); /* Hover sırasında daha belirgin gölge */
-            transform: scale(1.05); /* Hover sırasında büyütme efekti */
+            background: linear-gradient(135deg, #2575fc, #6a11cb); 
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); 
+            transform: scale(1.05); 
         }
 
         .my-button2:active {
-            transform: scale(0.95); /* Tıklama sırasında küçültme efekti */
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Tıklama sırasında gölge azalır */
+            transform: scale(0.95); 
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); 
         }
 
-        /* Şeffaf Navbar */
+       
         .navbar {
-            background: rgba(255, 255, 255, 0.85); /* Hafif şeffaf beyaz */
-            z-index: 10; /* Üstte görünmesi için */
-            border-radius: 20px; /* Köşeleri yuvarlat */
-            position: fixed; /* Sabit pozisyon */
-            top: 0; /* Ekranın üstüne sabitler */
+            background: rgba(255, 255, 255, 0.85); 
+            z-index: 10; 
+            border-radius: 20px; 
+            position: fixed; 
+            top: 0; 
             left: 0;
             margin-top: 10px;
         !important;
-            width: 100%; /* Tüm genişliği kapsar */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
+            width: 100%; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
         }
 
         .navbar-brand, .nav-link {
-            color: #000 !important; /* Metin rengini koyu yap */
-            text-decoration: none; /* Altı çizgiyi kaldır */
-            transition: color 0.3s ease; /* Renk geçiş efekti */
+            color: #000 !important; 
+            text-decoration: none; 
+            transition: color 0.3s ease; 
         }
 
-        /* Navbar Link Hover Durumu */
+       
         .navbar-brand:hover, .nav-link:hover {
-            color: #ff6f61 !important; /* Hover durumunda renk değişimi (hoş bir turuncu) */
-            text-decoration: none; /* Hover'da altı çizgiyi kaldır */
+            color: #ff6f61 !important; 
+            text-decoration: none; 
         }
 
-        /* Alt alan */
+
         footer {
             z-index: 2;
             text-align: center;
-            background: rgba(0, 0, 0, 0.4); /* Yarı şeffaf arka plan */
+            background: rgba(0, 0, 0, 0.4); 
             color: white;
             height: 65px;
             bottom: 0;
             padding-top: 10px;
-            display: flex; /* Flexbox etkinleştirildi */
-            align-items: center; /* Dikey hizalama */
-            justify-content: center; /* Yatay hizalama */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
         }
-
-        /* Arka plan video ayarları */
+        
         #background-video {
             position: fixed;
             right: 0;
@@ -82,7 +81,7 @@
             min-height: 100%;
             width: auto;
             height: auto;
-            z-index: -100; /* İçerik üzerinde görünmemesi için */
+            z-index: -100; 
             background-size: cover;
         }
 
@@ -109,7 +108,7 @@
             background: linear-gradient(45deg, #6c63ff, #57c1eb);
         }
 
-        /* Hover durumunda renk beyaz olsun */
+      
         .my-button:hover, .my-button-login:hover, .my-button-logout:hover {
             color: white !important;
         }
@@ -144,14 +143,14 @@
                 <ul class="navbar-nav">
                     <!-- Login/Logout Button -->
                     <li class="nav-item">
-                        <button id="Btn" class="nav-link text-dark my-button" onclick="goToMyQuizzes()">My Quizzes</button>
+                        <button id="Btn" class="nav-link text-dark my-button" onclick="goToMyQuizzes()">Quiz Results</button>
                     </li>
                 </ul>
 
                 <ul class="navbar-nav">
                     <!-- Login/Logout Button -->
                     <li class="nav-item">
-                        <button id="Btn" class="nav-link text-dark my-button" onclick="goToQuiz()">Edit Quizzes</button>
+                        <button id="Btn" class="nav-link text-dark my-button" onclick="goToQuiz()">Add Quiz</button>
                     </li>
                 </ul>
 
@@ -192,8 +191,7 @@
 <script>
 
 
-    // Uygulama yüklendiğinde veya belirli bir olayda kontrol edin
-    // Beyaz liste URL'leri
+
     const whiteListedPaths = [
         "/Login/ForgotPassword",
         "/Login/Index",
@@ -201,7 +199,7 @@
         "/Auth/Verification"
     ];
 
-    // Kullanıcının bulunduğu yol
+
     const currentPath = window.location.pathname;
 
     if (whiteListedPaths.includes(currentPath)) {
@@ -210,13 +208,13 @@
     document.addEventListener("DOMContentLoaded", () => {
         const authToken = localStorage.getItem("authToken");
         clearExpiredToken();
-        // Eğer mevcut yol beyaz listedeyse kontrol yapma
+      
         if (whiteListedPaths.includes(currentPath)) {
             return;
         }
 
         if (!authToken) {
-            // Tatlı bir uyarı pop-up'ı göster ve yönlendir
+     
             Swal.fire({
                 title: 'Session Expired',
                 text: 'Please log in to continue.',
@@ -229,18 +227,18 @@
                 window.location.href = '/Login/Index';
             });
         } else {
-            // Eğer token varsa, renderBody'nin görünmesini sağla
+         
             document.querySelector("#renderBody").style.display = "block";
         }
     });
 
     $.ajaxSetup({
         beforeSend: function (xhr) {
-            const token = localStorage.getItem('authToken'); // Token'i localStorage'dan al
+            const token = localStorage.getItem('authToken'); 
             if (token) {
-                xhr.setRequestHeader('Authorization', 'Bearer ' + token); // Authorization başlığı ekle
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token); 
             } else if (!whiteListedPaths.includes(currentPath)) {
-                // Eğer token yoksa ve beyaz listede değilse uyarı göster
+              
                 Swal.fire({
                     title: 'Session Expired',
                     text: 'Please log in to continue.',
@@ -250,28 +248,28 @@
                     allowOutsideClick: false,
                     allowEscapeKey: false
                 }).then(() => {
-                    window.location.href = '/Login/Index'; // Login sayfasına yönlendir
+                    window.location.href = '/Login/Index'; 
                 });
-                return false; // İsteği iptal et
+                return false; 
             }
         }
     });
 
     function isTokenExpired(token) {
-        if (!token) return true; // Token yoksa, süresi dolmuş kabul edilir.
+        if (!token) return true; 
 
-        const payloadBase64 = token.split('.')[1]; // JWT'nin payload kısmı
-        const payload = JSON.parse(atob(payloadBase64)); // Base64 çözülerek JSON olarak okunur
-        const expiration = payload.exp; // `exp` alanı okunur
+        const payloadBase64 = token.split('.')[1]; 
+        const payload = JSON.parse(atob(payloadBase64)); 
+        const expiration = payload.exp; 
 
-        const now = Math.floor(Date.now() / 1000); // Şu anki zaman (saniye cinsinden)
-        return now > expiration; // Şu anki zaman expiration'dan büyükse token süresi dolmuş demektir
+        const now = Math.floor(Date.now() / 1000); 
+        return now > expiration; 
     }
 
     function clearExpiredToken() {
-        const token = localStorage.getItem('authToken'); // Token'i al
+        const token = localStorage.getItem('authToken'); 
         if (isTokenExpired(token)) {
-            localStorage.removeItem('authToken'); // Token'i sil
+            localStorage.removeItem('authToken'); 
             if (whiteListedPaths.includes(currentPath)) {
                 return;
             }
@@ -280,51 +278,50 @@
     }
 
 
-    // Navbar'daki butonları kontrol et
     document.addEventListener("DOMContentLoaded", () => {
         const loginBtn = document.getElementById("loginBtn");
         const logoutBtn = document.getElementById("logoutBtn");
 
-        // localStorage'daki auth token'i kontrol et
+  
         const authToken = localStorage.getItem("authToken");
 
         if (authToken) {
-            // Eğer token varsa, logout butonunu göster
+          
             loginBtn.style.display = "none";
             logoutBtn.style.display = "inline-block";
         } else {
-            // Eğer token yoksa, login butonunu göster
+    
             loginBtn.style.display = "inline-block";
             logoutBtn.style.display = "none";
         }
     });
 
-    // Login Butonuna Basıldığında
+
     function handleLogin() {
-        window.location.href = "/Login/Index"; // Giriş sayfasına yönlendirme
+        window.location.href = "/Login/Index"; 
     }
 
-    // Logout Butonuna Basıldığında
+
     function handleLogout() {
-        localStorage.removeItem("authToken"); // Auth token'i sil
-        window.location.reload(); // Sayfayı yenile
+        localStorage.removeItem("authToken");
+        window.location.reload(); 
     }
 
     function goToQuestion() {
-        window.location.href = "/Question/Index"; // Question/Index sayfasına yönlendir
+        window.location.href = "/Question/Index"; 
     }
     
     function goToQuiz() {
-        window.location.href = "/Quiz/Index"; // Quiz/Index sayfasına yönlendir
+        window.location.href = "/Quiz/Index"; 
     }
 
     function goToMyQuizzes() {
-        window.location.href = "/User/MyQuizzes"; // Quiz/Index sayfasına yönlendir
+        window.location.href = "/User/MyQuizzes"; 
     }
 
 
     function goToSource() {
-        window.location.href = "https://github.com/zerenenes18/LetsQuizWeb"; // GitHub linkine yönlendir
+        window.location.href = "https://github.com/zerenenes18/LetsQuizWeb"; 
     }
 
 </script>

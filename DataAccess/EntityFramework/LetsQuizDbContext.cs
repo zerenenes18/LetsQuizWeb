@@ -37,6 +37,8 @@ public class LetsQuizDbContext : DbContext
     public DbSet<Score> Scores { get; set; }
     
     public DbSet<UserOption> UserOptions { get; set; }
+    public DbSet<UserStart> UserStarts { get; set; }
+
     public DbSet<Option> Options { get; set; }
     public DbSet<OperationClaim> OperationClaims { get; set; }
     public DbSet<VerificationCode> VerificationCodes { get; set; }

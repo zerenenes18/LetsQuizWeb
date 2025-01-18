@@ -23,4 +23,8 @@
       <None Include="wwwroot\Images\image2.png" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\Images\questions\" />
+    </ItemGroup>
+
 </Project>

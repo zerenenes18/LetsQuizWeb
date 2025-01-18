@@ -27,7 +27,7 @@
     }
 
     .score-card table {
-        margin-bottom: 0; /* Tablo dışındaki gereksiz boşluğu kaldırır */
+        margin-bottom: 0; 
     }
 </style>
 <div class="container mt-5">
@@ -61,8 +61,8 @@
                                 <td>@score.UserName</td>
                                 <td>@score.QuizName</td>
                                 <td>@score.QuizLecture</td>
-                                <td>@score.SuccessRate.ToString("F2")%</td> <!-- Virgülden sonra 2 basamak -->
-                                <td>@score.Points.ToString("F2")</td> <!-- Virgülden sonra 2 basamak -->
+                                <td>@score.SuccessRate.ToString("F2")%</td> 
+                                <td>@score.Points.ToString("F2")</td> 
                             </tr>
                         }
                         </tbody>
@@ -72,23 +72,21 @@
         </div>
     </div>
 
-    <!-- Dersler ve Quizler -->
+    
     <div class="row mt-5" id="lessonsContainer">
-        <!-- Dinamik içerik burada yüklenecek -->
+        
     </div>
 
 </div>
 
-<!-- Include jQuery if it's not already included -->
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
     $(document).ready(function () {
-
         const tableBody = $('#scoreTableBody');
         const rows = tableBody.find('tr').toArray();
 
-        // Sıralama fonksiyonu
         function sortTable(columnIndex, isNumeric = false, isDescending = false) {
             rows.sort((a, b) => {
                 const aValue = $(a).children('td').eq(columnIndex).text().trim();
@@ -107,55 +105,40 @@
             tableBody.empty().append(rows);
         }
 
-        // Başlıkların tıklanabilirliği
         $('#sortByUsername').on('click', () => sortTable(0));
         $('#sortByQuizName').on('click', () => sortTable(1));
         $('#sortByLectureName').on('click', () => sortTable(2));
-        $('#sortBySuccessRate').on('click', () => sortTable(3, true,true));
+        $('#sortBySuccessRate').on('click', () => sortTable(3, true, true));
         $('#sortByPoints').on('click', () => sortTable(4, true, true));
 
-        // Sayfa yüklendiğinde varsayılan sıralama
-        sortTable(1); // QuizName'e göre sırala
-        sortTable(4, true, true); // Aynı QuizName'de Points'e göre sırala
- 
-        
-        
-        // Dersler ve Quizleri yükleme
+        sortTable(1);
+        sortTable(4, true, true);
+
         function loadLessonsAndQuizzes() {
             const lessonsContainer = $('#lessonsContainer');
-
-            // Yükleniyor işaretini ekle
             lessonsContainer.html(`
-                <div class="text-center my-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2">Loading lessons and quizzes...</p>
+            <div class="text-center my-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
-            `);
+                <p class="mt-2">Loading lessons and quizzes...</p>
+            </div>
+        `);
 
             $.ajax({
                 url: '/Quiz/GetGlobalQuizzesData',
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('authToken') // Eğer oturum doğrulama kullanıyorsanız
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
                 },
                 success: function (data) {
-                    lessonsContainer.empty(); // Yükleniyor işaretini kaldır
-
-                    // Lecture Listesi
+                    lessonsContainer.empty();
                     const lectures = data.lectureList;
                     const quizzes = data.adminQuizzesModel;
 
-                    console.log(lectures);
-                    console.log(quizzes);
-
-                    // Her bir ders için card oluştur
                     lectures.forEach(lecture => {
-                        // Belirli bir derse ait quizleri filtrele
                         const lessonQuizzes = quizzes.filter(q => q.lectureName === lecture);
 
-                        // Eğer dersin quizleri yoksa o dersi atla
                         if (lessonQuizzes.length === 0) return;
 
                         const lessonCard = `
@@ -169,7 +152,7 @@
                     ${
                             lessonQuizzes.map(quiz => `
                         <li class="list-group-item quiz-item">
-                            <a href="/Quiz/QuizDetail?quizId=${quiz.quizId}" class="quiz-link">
+                            <a href="#" class="quiz-link" data-quiz-id="${quiz.quizId}">
                                 ${quiz.quizName}
                             </a>
                         </li>
@@ -185,16 +168,43 @@
                 },
                 error: function () {
                     lessonsContainer.html(`
-                        <div class="text-center my-5">
-                            <p class="text-danger">Failed to load lessons and quizzes. Please try again later.</p>
-                        </div>
-                    `);
+                    <div class="text-center my-5">
+                        <p class="text-danger">Failed to load lessons and quizzes. Please try again later.</p>
+                    </div>
+                `);
                     Swal.fire('Error', 'Failed to load lessons and quizzes!', 'error');
                 }
             });
         }
 
-        // Sayfa yüklendiğinde çağır
+        $(document).off('click', '.quiz-link').on('click', '.quiz-link', function (e) {
+            e.preventDefault();
+            const quizId = $(this).data('quiz-id');
+            $.ajax({
+                url: '/Quiz/IsExistPassQuizzes',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                data: { quizId: quizId },
+                success: function (response) {
+                    window.location.href = `/Quiz/QuizDetail?quizId=${quizId}`;
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) { // BadRequest yanıtı
+                        Swal.fire({
+                            title: 'Info',
+                            text: xhr.responseText || 'You have already completed this quiz. Please select another one.',
+                            icon: 'info', // Daha yumuşak bir görünüm için 'info' kullanıldı
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        Swal.fire('Error', 'Something went wrong!', 'error');
+                    }
+                }
+            });
+        });
+
         loadLessonsAndQuizzes();
     });
 </script>

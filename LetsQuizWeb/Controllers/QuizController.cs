@@ -19,12 +19,14 @@ public class QuizController : Controller
     IUserService _userService;
     IUserOptionDal _userOptionDal;
     IScoreDal _scoreDal;
+    IUserStartDal _userStartDal;
     private IHttpContextAccessor _httpContextAccessor;
     
     
-    public QuizController(ILectureService lectureService,IQuizService quizService,IQuestionService questionService,IOptionDal optionDal,IUserService userService,IScoreDal scoreDal,IUserOptionDal userOptionDal)
+    public QuizController(ILectureService lectureService,IQuizService quizService,IQuestionService questionService,IOptionDal optionDal,IUserService userService,IScoreDal scoreDal,IUserOptionDal userOptionDal,IUserStartDal userStartDal)
     {
         _lectureService  = lectureService;
+        _userStartDal = userStartDal;
         _quizService = quizService;
         _optionDal  = optionDal;
         _userOptionDal = userOptionDal;
@@ -160,37 +162,60 @@ public class QuizController : Controller
         return Ok(contentModel);
     }
     
-    public async Task<IActionResult> AddQuestion([FromBody] AddQuestionRequest request)
+    [HttpPost]
+    public async Task<IActionResult> AddQuestion([FromForm] AddQuestionRequest request)
+    {
+        if (request == null || string.IsNullOrEmpty(request.QuizName) || request.Question == null)
         {
-            if (request == null || string.IsNullOrEmpty(request.QuizName) || request.Question == null)
-            {
-                return BadRequest("Invalid request data.");
-            }
-
-            var quizResult = await _quizService.GetByNameAsync(request.QuizName);
-            if (!quizResult.Success || quizResult.Data == null)
-            {
-                return NotFound($"Quiz with name '{request.QuizName}' not found.");
-            }
-
-            var newQuestion = new Question
-            {
-                QuizId = quizResult.Data.Id,
-                Description = request.Question.QuestionText,
-                ImagePath = request.Question.QuestionImagePath,
-                QuestionScore = request.Question.QuestionScore,
-                QuestionSecondTime = request.Question.QuestionSecondTime
-            };
-
-            var result = await _questionService.AddAsync(newQuestion);
-            if (result.Success)
-            {
-                return Ok("Question added successfully.");
-            }
-
-            return StatusCode(500, "Failed to add the question.");
+            return BadRequest("Invalid request data.");
         }
 
+        // Quiz'i bul
+        var quizResult = await _quizService.GetByNameAsync(request.QuizName);
+        if (!quizResult.Success || quizResult.Data == null)
+        {
+            return NotFound($"Quiz with name '{request.QuizName}' not found.");
+        }
+
+        string imagePath = null;
+
+        // Eğer bir dosya yüklendiyse işle
+        if (request.QuestionImage != null && request.QuestionImage.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "questions");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(request.QuestionImage.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await request.QuestionImage.CopyToAsync(fileStream);
+            }
+
+            imagePath = $"/images/questions/{uniqueFileName}";
+        }
+
+        var newQuestion = new Question
+        {
+            QuizId = quizResult.Data.Id,
+            Description = request.Question.QuestionText,
+            ImagePath = imagePath, // Yüklenen dosyanın yolu
+            QuestionScore = request.Question.QuestionScore,
+            QuestionSecondTime = request.Question.QuestionSecondTime
+        };
+
+        var result = await _questionService.AddAsync(newQuestion);
+        if (result.Success)
+        {
+            return Ok("Question added successfully.");
+        }
+
+        return StatusCode(500, "Failed to add the question.");
+    }
     
     
     public async Task<IActionResult> AddOptions([FromBody] AddOptionsRequest request)
@@ -310,11 +335,31 @@ public class QuizController : Controller
         return Ok("Question deleted successfully.");
     }
     
-    
-    
+
+    public async Task<IActionResult> IsExistPassQuizzes(string quizId)
+    {
+        
+        var adminId = Guid.Parse(_httpContextAccessor.HttpContext.User.ClaimIdentifier());
+        var passStart = await _userStartDal.GetAllAsync(u => u.UserId == adminId);
+        Guid quizIdGuid = Guid.Parse(quizId);
+        
+        
+        bool ispassquiz = passStart.Any(s => s.QuizId == quizIdGuid);
+        if (ispassquiz)
+        {
+            return BadRequest("Quizzes can only be solved once.");
+        }
+
+
+        return Ok();
+    }
+
     public async Task<IActionResult> QuizDetail(string quizId)
     {
+        
         Guid quizIdGuid = Guid.Parse(quizId);
+        
+     
         var quiz = await _quizService.GetByIdAsync(quizIdGuid);
         var lecture = await _lectureService.GetByIdAsync(quiz.Data.LectureId);
         var admin = await _userService.GetByIdAsync(quiz.Data.AdminId);

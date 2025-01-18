@@ -36,6 +36,7 @@ public class AddQuestionRequest
     public Guid QuizId { get; set; }
     public string QuizName { get; set; }
     public QuestionRequest Question { get; set; }
+    public IFormFile QuestionImage { get; set; } // Dosya yükleme için
 }
 
 public class QuestionRequest
@@ -52,7 +53,10 @@ public class AddOptionsRequest
     public Guid QuestionId { get; set; }
     public List<OptionRequest> Options { get; set; }
 }
-
+public class QuizStartRequest
+{
+    public Guid QuizId { get; set; }
+}
 public class OptionRequest
 {
     public bool IsTrue { get; set; }

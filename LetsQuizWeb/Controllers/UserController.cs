@@ -15,15 +15,17 @@ public class UserController : Controller
     IUserService _userService;
     ILectureService _lectureService;
     IQuizService _quizService;
+    IUserStartDal _userStartDal;
     IQuestionService _questionService;
     IUserOptionDal _userOptionDal;
     IOptionDal _optionDal;
     IScoreDal _scoreDal;
     private IHttpContextAccessor _httpContextAccessor;
-    public UserController(IUserService userService,ILectureService lectureService,IQuizService quizService,IScoreDal scoreDal,IQuestionService questionService,IOptionDal optionDal,IUserOptionDal userOptionDal)
+    public UserController(IUserService userService,ILectureService lectureService,IQuizService quizService,IScoreDal scoreDal,IQuestionService questionService,IOptionDal optionDal,IUserOptionDal userOptionDal,IUserStartDal userStartDal)
     {
             _userService = userService;
             _lectureService = lectureService;
+            _userStartDal = userStartDal;
             _quizService = quizService;
             _optionDal = optionDal; 
             _userOptionDal = userOptionDal;
@@ -45,7 +47,20 @@ public class UserController : Controller
         return View();
     }
 
-     public async Task<IActionResult> GetQuizContent(Guid quizId)
+    [HttpPost]
+    public async Task<IActionResult> QuizStart([FromBody] QuizStartRequest request)
+    {
+        if (request == null || request.QuizId == Guid.Empty)
+        {
+            return BadRequest("Invalid request data.");
+        }
+        var userId = Guid.Parse(_httpContextAccessor.HttpContext.User.ClaimIdentifier());
+        UserStart userStart = new UserStart{UserId = userId, QuizId = request.QuizId};
+        await _userStartDal.AddAsync(userStart);
+        return Ok();
+    }
+ 
+    public async Task<IActionResult> GetQuizContent(Guid quizId)
     {
         var contentModel = new QuizContentModel(); 
         List<QuestionModel> questionList = new List<QuestionModel>();
@@ -143,12 +158,12 @@ public class UserController : Controller
         }
         var adminId = Guid.Parse(_httpContextAccessor.HttpContext.User.ClaimIdentifier());
         
-        var Userscores = await _scoreDal.GetAllAsync(s=> s.UserId == adminId);
+        var UserStarts = await _userStartDal.GetAllAsync(s=> s.UserId == adminId);
        
         List<Guid> quizzesIds = new List<Guid>();
-        foreach (var score in Userscores)
+        foreach (var starts in UserStarts)
         {
-                quizzesIds.Add(score.QuizId);
+                quizzesIds.Add(starts.QuizId);
         }
         List<Quiz> Quizzes = new List<Quiz>();
         foreach (var id in quizzesIds)

@@ -34,7 +34,7 @@
                 return;
             }
 
-            sendCodeBtn.disabled = true; // Butonu devre dışı bırak
+            sendCodeBtn.disabled = true; 
             sendCodeBtn.innerText = "Sending...";
 
             try {
@@ -44,15 +44,14 @@
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${authToken}`
                     },
-                    body: JSON.stringify("sendCode") // String olarak gönderim
+                    body: JSON.stringify("sendCode") 
                 });
 
                 if (response.ok) {
-                   // alert("Verification code sent successfully.");
+                 
                     sendCodeBtn.innerText = "Send Code (1:00)";
                     confirmCodeSection.style.display = "block";
 
-                    // Geri sayım
                     let countdown = 60;
                     const interval = setInterval(() => {
                         countdown--;
@@ -87,7 +86,7 @@
                 return;
             }
 
-            confirmCodeBtn.disabled = true; // Butonu devre dışı bırak
+            confirmCodeBtn.disabled = true; 
             confirmCodeBtn.innerText = "Verifying...";
 
             try {
@@ -97,12 +96,11 @@
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${authToken}`
                     },
-                    body: JSON.stringify(verificationCode) // Kod string olarak gönderiliyor
+                    body: JSON.stringify(verificationCode) 
                 });
 
                 if (response.ok) {
-                    //alert("Verification successful!");
-                    // Doğrulama başarılı olduğunda yönlendirme
+                   
                     window.location.href = '/Login/Index'; // Redirect to home page
                 } else {
                     const error = await response.json();

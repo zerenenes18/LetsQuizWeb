@@ -7,10 +7,16 @@
 
     #question-card h5 {
         text-align: center;
-        font-size: 1.8rem; /* Başlık boyutu büyütüldü */
+        font-size: 1.8rem; 
         font-weight: bold;
     }
-
+    .question-image {
+     
+        max-height: 350px;  
+        object-fit: contain;  
+        margin: 0 auto; /
+        display: block; 
+    }
     #timer-bar-container {
         height: 10px;
         background-color: #e9ecef;
@@ -46,23 +52,23 @@
     }
 
     .form-check-label {
-        font-size: 1.2rem; /* Etiket boyutu büyütüldü */
+        font-size: 1.2rem; 
         font-weight: 500;
         margin-left: 10px;
     }
 
     .form-check {
-        margin-bottom: 15px; /* Seçenekler arası boşluk eklendi */
+        margin-bottom: 15px; 
     }
 
     .form-check-input {
-        transform: scale(1.3); /* Radyo butonları büyütüldü */
+        transform: scale(1.3); 
     }
 </style>
 
 <div class="container mt-5">
     <div id="quiz-container">
-        <!-- Dinamik olarak Sorular Burada Gösterilecek -->
+
     </div>
 
     <div id="finish-card" class="card shadow-lg d-none text-center">
@@ -83,33 +89,70 @@
         let results = [];
         let timerInterval;
 
+      
+        Swal.fire({
+            title: 'If you exit the quiz, you will not be able to re-enter.',
+            text: 'Good luck!',
+            icon: 'warning',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Start',
+            cancelButtonText: 'Cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                $.ajax({
+                    url: '/User/QuizStart',
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                    },
+                    contentType: 'application/json',
+                    data: JSON.stringify({ QuizId: quizContent.quizId }),
+                    success: function () {
+                        renderQuestion(currentQuestionIndex);
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire('Error', `Failed to start quiz! ${xhr.responseText || error}`, 'error');
+                    },
+                });
+            } else {
+             
+                window.location.href = '/Home/Index';
+            }
+        });
+
         function renderQuestion(index) {
             const question = quizContent.questions[index];
             const totalSeconds = question.questionSecondTime;
             let remainingSeconds = totalSeconds;
 
-            console.log("Rendering question:", question); // Log soruyu görüntülemek için
+            console.log("Rendering question:", question);
             const questionCard = `
-        <div class="card shadow-lg mb-4" id="question-card">
-            <div class="card-body">
-                <h5>${question.questionText}</h5>
-                ${question.questionImagePath ? `<img src="${question.questionImagePath}" class="img-fluid rounded mb-3">` : ''}
-                <p><strong>Score:</strong> ${question.questionScore}</p>
-                <div id="timer-bar-container">
-                    <div id="timer-bar"></div>
-                </div>
-                <div id="options" class="mt-3">
-                    ${question.options.map(option => `
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="option" id="option-${option.optionId}" value="${option.optionId}" data-is-true="${option.isTrue}">
-                            <label class="form-check-label" for="option-${option.optionId}">${option.optionText}</label>
+                <div class="card shadow-lg mb-4" id="question-card">
+                    <div class="card-body">
+                        <h5>${question.questionText}</h5>
+                        ${question.questionImagePath ? `
+                            <img src="${question.questionImagePath}" 
+                                 class="img-fluid rounded mb-3 question-image" 
+                                 alt="Question Image">`
+                            : ''}
+                        <p><strong>Score:</strong> ${question.questionScore}</p>
+                        <div id="timer-bar-container">
+                            <div id="timer-bar"></div>
                         </div>
-                    `).join('')}
+                        <div id="options" class="mt-3">
+                            ${question.options.map(option => `
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="option" id="option-${option.optionId}" value="${option.optionId}" data-is-true="${option.isTrue}">
+                                    <label class="form-check-label" for="option-${option.optionId}">${option.optionText}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button id="next-btn" class="btn btn-primary mt-4" disabled>Next</button>
+                    </div>
                 </div>
-                <button id="next-btn" class="btn btn-primary mt-4" disabled>Next</button>
-            </div>
-        </div>
-    `;
+            `;
 
             $('#quiz-container').html(questionCard);
 
@@ -157,7 +200,7 @@
         function processAnswer(index, timeTaken, isTimeout) {
             const question = quizContent.questions[index];
             const selectedOption = $('input[name="option"]:checked');
-            const isTrue = selectedOption.length > 0 ? selectedOption.data('is-true') || false : false; // Eğer işaretli şık varsa kontrol et
+            const isTrue = selectedOption.length > 0 ? selectedOption.data('is-true') || false : false;
             const quizId = quizContent.quizId;
 
             let score = 0;
@@ -165,10 +208,8 @@
                 score = (1 - (timeTaken / question.questionSecondTime)) * question.questionScore / 2 + question.questionScore / 2;
             }
 
-            // Varsayılan ID (hiçbir şık seçilmezse dönecek)
             const defaultOptionId = "00000000-0000-0000-0000-000000000000";
 
-            // Seçilen şık boşsa default ID döner
             results.push({
                 QuestionId: question.questionId,
                 Time: timeTaken,
@@ -190,28 +231,26 @@
             $('#quiz-container').html('');
             $('#finish-card').removeClass('d-none');
 
+          
+            $.ajax({
+                url: '/Quiz/FinishQuiz',
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify(results),
+                success: function () {
+                    Swal.fire('Success', 'Your results have been submitted!', 'success');
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire('Error', `Failed to submit results! ${xhr.responseText || error}`, 'error');
+                }
+            });
+
             $('#finish-quiz-btn').click(function () {
-                $.ajax({
-                    url: '/Quiz/FinishQuiz',
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-                    },
-                    contentType: 'application/json',
-                    data: JSON.stringify(results), // Tüm sonuçları backend'e gönder
-                    success: function () {
-                        Swal.fire('Success', 'Your results have been submitted!', 'success').then(() => {
-                            window.location.href = '/Home/Index';
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        // Hata durumunu göster
-                        Swal.fire('Error', `Failed to submit results! ${xhr.responseText || error}`, 'error');
-                    }
-                });
+                window.location.href = '/Home/Index';
             });
         }
-
-        renderQuestion(currentQuestionIndex);
     });
 </script>

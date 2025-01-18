@@ -17,15 +17,17 @@ public class QuizController : Controller
     IQuizService _quizService;
     IOptionDal _optionDal;
     IUserService _userService;
+    IUserOptionDal _userOptionDal;
     IScoreDal _scoreDal;
     private IHttpContextAccessor _httpContextAccessor;
     
     
-    public QuizController(ILectureService lectureService,IQuizService quizService,IQuestionService questionService,IOptionDal optionDal,IUserService userService,IScoreDal scoreDal)
+    public QuizController(ILectureService lectureService,IQuizService quizService,IQuestionService questionService,IOptionDal optionDal,IUserService userService,IScoreDal scoreDal,IUserOptionDal userOptionDal)
     {
         _lectureService  = lectureService;
         _quizService = quizService;
         _optionDal  = optionDal;
+        _userOptionDal = userOptionDal;
         _questionService = questionService;
         _userService = userService;
         _scoreDal = scoreDal;
@@ -500,6 +502,16 @@ public class QuizController : Controller
         decimal isTrueCount = 0;
         foreach (var result in results)
         {
+            var _selectedOptionId = result.SelectedOptionId;
+            LetsQuizCore.Entities.UserOption userOption = new LetsQuizCore.Entities.UserOption();
+            if (_selectedOptionId != Guid.Empty)
+            {
+                userOption.OptionId = _selectedOptionId;
+                userOption.QuestionId = result.QuestionId;
+                userOption.UserId = adminId;
+                userOption.IsTrue = result.IsTrue;
+                await _userOptionDal.AddAsync(userOption);
+            }
             if (result.IsTrue)
             {
                 isTrueCount++;
@@ -525,9 +537,11 @@ public class QuizController : Controller
     {
         public Guid QuestionId { get; set; }
         public Guid QuizId { get; set; }
+        public Guid SelectedOptionId { get; set; }
         public int Time { get; set; }
         public double Score { get; set; }
         public bool IsTrue { get; set; }
+        
     }
 
 

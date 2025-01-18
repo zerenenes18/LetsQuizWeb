@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="~/css/quiz.css" />
+
+    <style>
+
+        .quiz-delete {
+            display: flex;
+            align-items: center; /* Dikeyde ortalama */
+            justify-content: center; /* Yatayda ortalama */
+            width: 20px; /* Sabit genişlik */
+            height: 20px; /* Sabit yükseklik */
+            background-color: #f8d7da; /* Hafif kırmızı arka plan */
+            border-radius: 15px; /* Tam yuvarlak */
+            cursor: pointer; /* İmleç değişimi */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .quiz-delete:hover {
+            background-color: #f5c6cb; /* Hover sırasında daha koyu kırmızı */
+            transform: scale(1.1); /* Hover sırasında büyütme efekti */
+        }
+
+        .quiz-delete i {
+            color: #721c24; /* Çöp kutusu simgesi için renk */
+            font-size: 16px; /* Simge boyutu */
+        }
+        .quiz-card {
+            display: flex;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .rounded-icon {
+            border-radius: 10px;
+        }
+        .quiz-info {
+            width: 90%;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .quiz-delete {
+            width: 10%;
+            background-color: #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+        .circle {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+
+        .bg-yellow {
+            background-color: #fff3cd;
+        }
+
+        .bg-green {
+            background-color: #d4edda;
+        }
+
+        .bg-red {
+            background-color: #f8d7da;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend span {
+            font-size: 0.9rem;
+        }
+        .quiz-delete:hover {
+            background-color: #c82333;
+        }
+
+        .right-panel{
+            margin-bottom: 60px !important;
+        }
+        .left-panel{
+            margin-bottom: 60px !important;
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <!-- Sol Panel (Eski Quizler) -->
+        <div class="col-md-4">
+            <div class="left-panel">
+                <h5 class="text-center">Your Completed Quizzes</h5>
+                <div id="quizList">
+
+                    <!-- Dinamik olarak quizler buraya eklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Panel (Yeni Quiz Ekleme) -->
+        <div class="col-md-8">
+            <div class="right-panel">
+              <h6>You can click on the quizzes you have completed to review your answers.</h6>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        const loadingIndicator = `
+            <div id="loadingIndicator" class="d-flex justify-content-center align-items-center" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        `;
+        $('body').append(loadingIndicator);
+        loadQuizzesAndLectures();
+
+        function loadQuizzesAndLectures() {
+            $.ajax({
+                url: '/User/GetQuizzesPageData',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                success: function (data) {
+                    // Quizleri temizle ve doldur
+                    $('#quizList').empty();
+                    if (!data.adminQuizzesModel || data.adminQuizzesModel.length === 0) {
+                        const noQuizMessage = `
+                    <div class="alert alert-warning text-center" role="alert">
+                        No quizzes found!
+                    </div>`;
+                        $('#quizList').append(noQuizMessage);
+                    } else {
+                        data.adminQuizzesModel.forEach(function (quiz) {
+                            const quizCard = `
+                        <div class="quiz-card" data-quiz-id="${quiz.quizId}" data-quiz-name="${quiz.quizName}">
+                            <div class="quiz-info">
+                                <h6>${quiz.quizName}</h6>
+                                <p>Lecture: ${quiz.lectureName}</p>
+                            </div>
+                          
+                        </div>`;
+                            $('#quizList').append(quizCard);
+                        });
+                    }
+
+                    // Ders listesini temizle ve doldur
+                    $('#lecture').empty();
+                    if (!data.lectureList || data.lectureList.length === 0) {
+                        const noLectureOption = `
+                    <option value="">No lectures available</option>`;
+                        $('#lecture').append(noLectureOption);
+                    } else {
+                        data.lectureList.forEach(function (lectureName) {
+                            const lectureOption = `
+                        <option value="${lectureName}">${lectureName}</option>`;
+                            $('#lecture').append(lectureOption);
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load data!', 'error');
+                },
+                complete: function () {
+                    $('#loadingIndicator').remove();
+                }
+            });
+        }
+
+        function loadQuizContent(quizId) { // quizName yerine quizId
+            $.ajax({
+                url: '/User/GetQuizContent',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                data: { quizId: quizId }, // quizId gönder
+                success: function (data) {
+                    const rightPanel = $('.right-panel');
+                    rightPanel.empty(); // Sağ paneli temizle
+
+                    // Quiz içeriğini oluştur
+                    const quizContent = `
+           <div class="card shadow-lg p-4 mb-4 bg-white rounded">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3 class="card-title text-primary">${data.quizName}</h3>
+    </div>
+    <h5 class="text-muted mb-3">Lecture: ${data.lectureName}</h5>
+
+    <!-- Legend Section -->
+    <div class="legend d-flex align-items-center my-3">
+        <div class="legend-item d-flex align-items-center me-3">
+            <div class="circle bg-yellow me-2"></div>
+            <span>Empty</span>
+        </div>
+        <div class="legend-item d-flex align-items-center me-3">
+            <div class="circle bg-red me-2"></div>
+            <span>False</span>
+        </div>
+        <div class="legend-item d-flex align-items-center">
+            <div class="circle bg-green me-2"></div>
+            <span>True</span>
+        </div>
+    </div>
+    <!-- End Legend Section -->
+
+    <h4 class="mt-4">Questions:</h4>
+    <div>
+        ${data.questions.map((question, index) => `
+            <div class="question-card border rounded p-3 my-3" style="background-color: #f9f9f9;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="text-secondary">Question ${index + 1}</h5>
+                </div>
+                <p><strong>${question.questionText}</strong></p>
+                ${question.questionImagePath ?
+                        `<img src="${question.questionImagePath}" alt="Question Image" class="img-fluid rounded mb-2">` : ''}
+                <p><strong>Score:</strong> ${question.questionScore}</p>
+                <p><strong>Time:</strong> ${question.questionSecondTime} seconds</p>
+                <h6 class="mt-3">Options:</h6>
+                <ul class="list-group">
+                    ${question.options.map(option => {
+                        let backgroundColor = '';
+                        if (option.isYellow) {
+                            backgroundColor = 'background-color: #fff3cd;'; // Yellow
+                        } else if (option.isGreen) {
+                            backgroundColor = 'background-color: #d4edda;'; // Green
+                        } else if (option.isRed) {
+                            backgroundColor = 'background-color: #f8d7da;'; // Red
+                        }
+                        return `
+                    <li class="list-group-item d-flex justify-content-between align-items-center" style="${backgroundColor}">
+                        <div>
+                            ${option.optionText}
+                            ${option.optionImagePath ?
+                            `<img src="${option.optionImagePath}" alt="Option Image" class="img-thumbnail ms-2" style="max-width: 50px; height: auto;">` : ''}
+                        </div>
+                        <div class="d-flex align-items-center">
+                            ${option.isTrue ?
+                            `<span class="ms-auto text-success"><i class="fa fa-check-circle"></i> Correct</span>` : ''}
+                        </div>
+                    </li>
+                `;
+                    }).join('')}
+                </ul>
+            </div>
+        `).join('')}
+    </div>
+</div>
+            `;
+
+                    rightPanel.append(quizContent);
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load quiz content!', 'error');
+                }
+            });
+        }
+       
+
+    
+        // Quiz bilgisine tıklandığında quiz içeriğini yükler
+        // Quiz bilgisine tıklandığında quiz içeriğini yükler
+        $(document).on('click', '.quiz-info', function () {
+            const quizId = $(this).closest('.quiz-card').data('quiz-id'); // quizId al
+            loadQuizContent(quizId); // loadQuizContent'e quizId gönder
+        });
+// Silme bölgesine tıklandığında quiz silme işlemini yapar
+      
+    });
+</script>
+</body>
+</html>

@@ -144,7 +144,14 @@
                 <ul class="navbar-nav">
                     <!-- Login/Logout Button -->
                     <li class="nav-item">
-                        <button id="Btn" class="nav-link text-dark my-button" onclick="goToQuiz()">My Quizzes</button>
+                        <button id="Btn" class="nav-link text-dark my-button" onclick="goToMyQuizzes()">My Quizzes</button>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    <!-- Login/Logout Button -->
+                    <li class="nav-item">
+                        <button id="Btn" class="nav-link text-dark my-button" onclick="goToQuiz()">Edit Quizzes</button>
                     </li>
                 </ul>
 
@@ -306,10 +313,15 @@
     function goToQuestion() {
         window.location.href = "/Question/Index"; // Question/Index sayfasına yönlendir
     }
-
+    
     function goToQuiz() {
         window.location.href = "/Quiz/Index"; // Quiz/Index sayfasına yönlendir
     }
+
+    function goToMyQuizzes() {
+        window.location.href = "/User/MyQuizzes"; // Quiz/Index sayfasına yönlendir
+    }
+
 
     function goToSource() {
         window.location.href = "https://github.com/zerenenes18/LetsQuizWeb"; // GitHub linkine yönlendir

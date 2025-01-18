@@ -54,6 +54,8 @@ public class AutofacBusinessModule : Module
 
         builder.RegisterType<QuestionDal>().As<IQuestionDal>();
         builder.RegisterType<OptionDal>().As<IOptionDal>();
+        builder.RegisterType<UserOptionDal>().As<IUserOptionDal>();
+
         builder.RegisterType<ScoreDal>().As<IScoreDal>();
 
         

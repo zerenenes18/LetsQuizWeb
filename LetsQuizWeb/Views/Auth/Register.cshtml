@@ -110,7 +110,7 @@
                 success: function (response) {
                     if (response.success) {
                         localStorage.setItem('registered', response.data.token);
-                        window.location.href = '/Auth/Verification';
+                        window.location.href = '/Login/Index';
                     } else {
                         alert('Registration failed: ' + response.message);
                     }

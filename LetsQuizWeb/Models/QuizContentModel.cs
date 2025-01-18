@@ -24,6 +24,10 @@ public class OptionModel
     public string? OptionText { get; set; }
     public string OptionImagePath { get; set; }
     public bool IsTrue { get; set; }
+    
+    public bool IsRed { get; set; } = false;
+    public bool IsYellow { get; set; } = false;
+    public bool IsGreen { get; set; } = false;
 }
 
 // Request models for AddQuestion and AddOptions

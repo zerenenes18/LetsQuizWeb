@@ -87,7 +87,8 @@
             const question = quizContent.questions[index];
             const totalSeconds = question.questionSecondTime;
             let remainingSeconds = totalSeconds;
-        
+
+            console.log("Rendering question:", question); // Log soruyu görüntülemek için
             const questionCard = `
         <div class="card shadow-lg mb-4" id="question-card">
             <div class="card-body">
@@ -111,7 +112,7 @@
     `;
 
             $('#quiz-container').html(questionCard);
-           
+
             // Timer
             const timerBar = $('#timer-bar');
             clearInterval(timerInterval);
@@ -120,16 +121,12 @@
                 const percentage = (remainingSeconds / totalSeconds) * 100;
                 timerBar.css('width', `${percentage}%`);
 
-                // Son 5 saniye için pulse animasyonu
                 if (remainingSeconds <= 5) {
                     timerBar.addClass('pulse');
                 }
 
-                // Zaman dolarsa otomatik olarak sonraki soruya geç
                 if (remainingSeconds <= -1) {
                     clearInterval(timerInterval);
-
-                    // İşaretli bir şık varsa onu geçerli yap, yoksa cevap yanlış
                     const selectedOption = $('input[name="option"]:checked');
                     const isTimeout = true;
                     processAnswer(
@@ -141,7 +138,6 @@
                 }
             }, 1000);
 
-            // "Next" butonunu 1.5 saniye sonra etkinleştir
             setTimeout(() => {
                 $('#next-btn').prop('disabled', false);
             }, 1500);
@@ -165,19 +161,21 @@
             const quizId = quizContent.quizId;
 
             let score = 0;
-            console.log()
             if (isTrue) {
-                
                 score = (1 - (timeTaken / question.questionSecondTime)) * question.questionScore / 2 + question.questionScore / 2;
-                console.log(score);
             }
 
+            // Varsayılan ID (hiçbir şık seçilmezse dönecek)
+            const defaultOptionId = "00000000-0000-0000-0000-000000000000";
+
+            // Seçilen şık boşsa default ID döner
             results.push({
                 QuestionId: question.questionId,
                 Time: timeTaken,
                 Score: score,
                 IsTrue: isTrue,
-                QuizId: quizId
+                QuizId: quizId,
+                SelectedOptionId: selectedOption.length > 0 ? selectedOption.val() : defaultOptionId
             });
 
             currentQuestionIndex++;
@@ -200,20 +198,20 @@
                         'Authorization': 'Bearer ' + localStorage.getItem('authToken')
                     },
                     contentType: 'application/json',
-                    data: JSON.stringify(results),
+                    data: JSON.stringify(results), // Tüm sonuçları backend'e gönder
                     success: function () {
                         Swal.fire('Success', 'Your results have been submitted!', 'success').then(() => {
                             window.location.href = '/Home/Index';
                         });
                     },
-                    error: function () {
-                        Swal.fire('Error', 'Failed to submit results!', 'error');
+                    error: function (xhr, status, error) {
+                        // Hata durumunu göster
+                        Swal.fire('Error', `Failed to submit results! ${xhr.responseText || error}`, 'error');
                     }
                 });
             });
         }
 
-        // İlk soruyu render et
         renderQuestion(currentQuestionIndex);
     });
 </script>
